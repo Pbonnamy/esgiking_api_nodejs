@@ -42,12 +42,16 @@ export class AuthService {
         return jwt.sign({
             id: user.id,
             username: user.login
-        }, process.env.SECRET, {expiresIn: '1h'})
+        }, process.env.SECRET, {expiresIn: '1d'})
     }
 
     public me(token: string | undefined): string {
         const extracted = AuthUtils.getToken(token)
 
-        return jwt.decode(extracted, {complete: false})
+        const content =  jwt.decode(extracted, {complete: false})
+        content.iat = new Date(content.iat * 1000).toISOString();
+        content.exp = new Date(content.exp * 1000).toISOString();
+
+        return content
     }
 }

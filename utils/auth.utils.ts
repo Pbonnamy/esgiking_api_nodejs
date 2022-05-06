@@ -1,5 +1,4 @@
 import * as crypto from "crypto";
-import {Request} from "express";
 
 export class AuthUtils {
 
