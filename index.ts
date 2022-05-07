@@ -2,14 +2,13 @@ import {config} from "dotenv";
 import express from 'express';
 import {Request, Response} from "express";
 import mongoose, {Mongoose} from "mongoose";
-import {AuthController} from "./controllers";
+import {AuthController, RestaurantController} from "./controllers";
 
 config();
 
 async function startServer(): Promise<void> {
 
     const PORT = process.env.PORT
-    const SECRET = process.env.SECRET
 
     await mongoose.connect(process.env.MONGO_URI as string, {
         auth: {
@@ -19,13 +18,14 @@ async function startServer(): Promise<void> {
     });
 
     const app = express();
-
-    /*app.get('/', function (req: Request, res: Response) {
+    app.get('/', function (req: Request, res: Response) {
         res.send("Hello world");
-    })*/
+    })
 
     const authController = new AuthController();
     app.use('/auth', authController.buildRoutes())
+    const restaurantController = new RestaurantController();
+    app.use('/restaurants', restaurantController.buildRoutes())
 
     app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);

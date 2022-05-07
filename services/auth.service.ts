@@ -48,7 +48,7 @@ export class AuthService {
     public me(token: string | undefined): string {
         const extracted = AuthUtils.getToken(token)
 
-        const content =  jwt.decode(extracted, {complete: false})
+        const content = jwt.decode(extracted, {complete: false})
         content.iat = new Date(content.iat * 1000).toISOString();
         content.exp = new Date(content.exp * 1000).toISOString();
 
