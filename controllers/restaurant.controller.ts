@@ -7,8 +7,20 @@ export class RestaurantController {
     async createRestaurant(req: Request, res: Response) {
         const body = req.body;
 
-        if(!body.name || !body.address || !body.phone) {
-            res.status(400).end();
+        const error: Record<string, any> = {};
+
+        if(!body.name) {
+            error.name = "missing parameter"
+        }
+        if(!body.address) {
+            error.address = "missing parameter"
+        }
+        if(!body.phone) {
+            error.phone = "missing parameter"
+        }
+
+        if (error) {
+            res.status(401).send(error).end();
             return;
         }
 
@@ -39,7 +51,7 @@ export class RestaurantController {
         try {
             const restaurant = await RestaurantService.getInstance().getOneById(req.params.id);
             if(!restaurant) {
-                res.status(404).end();
+                res.status(404).send({error : "Restaurant not found"}).end();
                 return;
             }
             res.json(restaurant);
@@ -53,9 +65,9 @@ export class RestaurantController {
         try {
             const success = await RestaurantService.getInstance().deleteById(req.params.id);
             if(success) {
-                res.status(204).end();
+                res.status(200).send({message : "Restaurant successfully deleted"}).end();
             } else {
-                res.status(404).end();
+                res.status(404).send({error : "Restaurant not found"}).end();
             }
         } catch(err) {
             res.status(400).end();
@@ -67,7 +79,7 @@ export class RestaurantController {
             const restaurant = await RestaurantService.getInstance().updateById(req.params.id, req.body);
 
             if(!restaurant) {
-                res.status(404).end();
+                res.status(404).send({error : "Restaurant not found"}).end();
                 return;
             }
 

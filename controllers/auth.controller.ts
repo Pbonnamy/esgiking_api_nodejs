@@ -6,9 +6,24 @@ export class AuthController {
 
     async register(req: Request, res: Response) {
         try {
+            const body = req.body;
+            const error: Record<string, any> = {};
+
+            if(!body.login) {
+                error.login = "missing parameter"
+            }
+            if(!body.password) {
+                error.password = "missing parameter"
+            }
+
+            if (error) {
+                res.status(401).send(error).end();
+                return
+            }
+
             const user = await AuthService.getInstance().register({
-                login: req.body.login,
-                password: req.body.password
+                login: body.login,
+                password: body.password
             });
 
             res.json(user);
@@ -28,7 +43,7 @@ export class AuthController {
                 access_token: token
             });
         } catch(err) {
-            res.status(401).end();
+            res.status(401).send({ error: 'Invalid credentials' }).end();
         }
     }
 
