@@ -1,5 +1,5 @@
 import {UserDocument, UserModel, UserProps} from "../models";
-import {AuthUtils} from "../utils";
+import {AuthUtil} from "../utils";
 
 const jwt = require('jsonwebtoken')
 
@@ -16,23 +16,31 @@ export class AuthService {
 
     private constructor() { }
 
-    public async register(user: Partial<UserProps>): Promise<UserDocument> {
-        if(!user.password) {
+    public async register(props: Partial<UserProps>): Promise<UserDocument> {
+        if(!props.password) {
             throw new Error('Missing parameters');
         }
 
         const model = new UserModel({
-            login: user.login,
-            password: AuthUtils.sha512(user.password)
+            login: props.login,
+            password: AuthUtil.sha512(props.password),
+            type: props.type
         });
 
-        return model.save();
+        const user = await model.save();
+        await user.populate("type");
+
+        return user;
     }
 
-    public async logIn(info: Pick<UserProps, 'login' | 'password'>): Promise<string> {
+    public async logIn(props: Partial<UserProps>): Promise<string> {
+        if(!props.password) {
+            throw new Error('Missing parameters');
+        }
+
         const user = await UserModel.findOne({
-            login: info.login,
-            password: AuthUtils.sha512(info.password)
+            login: props.login,
+            password: AuthUtil.sha512(props.password)
         }).exec();
 
         if (!user) {
@@ -41,12 +49,13 @@ export class AuthService {
 
         return jwt.sign({
             id: user.id,
-            username: user.login
+            username: user.login,
+            type: user.type
         }, process.env.SECRET, {expiresIn: '1d'})
     }
 
     public me(token: string | undefined): string {
-        const extracted = AuthUtils.getToken(token)
+        const extracted = AuthUtil.getToken(token)
 
         const content = jwt.decode(extracted, {complete: false})
         content.iat = new Date(content.iat * 1000).toISOString();

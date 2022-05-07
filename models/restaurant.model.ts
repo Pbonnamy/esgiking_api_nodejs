@@ -17,6 +17,7 @@ const restaurantSchema = new Schema({
     },
 }, {
     collection: "restaurants",
+    timestamps: true,
     versionKey: false
 });
 

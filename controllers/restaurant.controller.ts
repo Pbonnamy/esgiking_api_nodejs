@@ -19,8 +19,8 @@ export class RestaurantController {
             error.phone = "missing parameter"
         }
 
-        if (error) {
-            res.status(401).send(error).end();
+        if (Object.keys(error).length !== 0) {
+            res.status(400).send(error).end();
             return;
         }
 

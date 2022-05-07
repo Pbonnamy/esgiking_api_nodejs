@@ -1,4 +1,5 @@
 import mongoose, {Schema, Document, Model} from "mongoose";
+import {UserTypeProps} from "./user-type.model";
 
 const userSchema = new Schema({
     login: {
@@ -10,6 +11,10 @@ const userSchema = new Schema({
         type: Schema.Types.String,
         required: true
     },
+    type:{
+        type: Schema.Types.Number,
+        ref: "UserType"
+    }
 }, {
     collection: "users",
     timestamps: true,
@@ -18,8 +23,9 @@ const userSchema = new Schema({
 
 export interface UserProps {
     _id: string;
+    type: UserTypeProps
     login: string;
-    password: string;
+    password?: string;
 }
 
 export type UserDocument = UserProps & Document;

@@ -3,11 +3,11 @@ import express from 'express';
 import {Request, Response} from "express";
 import mongoose, {Mongoose} from "mongoose";
 import {AuthController, RestaurantController} from "./controllers";
+import {SeedUtil} from "./utils";
 
 config();
 
 async function startServer(): Promise<void> {
-
     const PORT = process.env.PORT
 
     await mongoose.connect(process.env.MONGO_URI as string, {
@@ -16,6 +16,8 @@ async function startServer(): Promise<void> {
             password: process.env.MONGO_PASSWORD as string
         }
     });
+
+    await SeedUtil.seed();
 
     const app = express();
     app.get('/', function (req: Request, res: Response) {

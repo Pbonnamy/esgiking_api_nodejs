@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 
-export class AuthUtils {
+export class AuthUtil {
 
     public static sha512(str: string): string {
         const hash = crypto.createHash('sha512');

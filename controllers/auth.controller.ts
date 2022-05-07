@@ -15,17 +15,22 @@ export class AuthController {
             if(!body.password) {
                 error.password = "missing parameter"
             }
+            if(!body.type) {
+                error.type = "missing parameter"
+            }
 
-            if (error) {
-                res.status(401).send(error).end();
-                return
+            if (Object.keys(error).length !== 0) {
+                res.status(400).send(error).end();
+                return;
             }
 
             const user = await AuthService.getInstance().register({
                 login: body.login,
-                password: body.password
+                password: body.password,
+                type: body.type
             });
 
+            user.password = undefined
             res.json(user);
         } catch(err) {
             res.status(400).end();
