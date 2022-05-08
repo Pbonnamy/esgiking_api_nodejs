@@ -5,7 +5,7 @@ export class SeedUtil {
         const types = [
             {
                 id: 1,
-                name: "super admin"
+                name: "root"
             },
             {
                 id: 2,
@@ -29,6 +29,9 @@ export class SeedUtil {
                     _id: type.id,
                     name: type.name
                 }).save();
+            } else {
+                exist.name = type.name
+                await exist.save();
             }
         }
     }

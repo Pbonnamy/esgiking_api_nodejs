@@ -1,28 +1,13 @@
 import express, {Request, Response, Router} from "express";
 import {AuthService} from "../services";
 import {checkAuth} from "../middlewares";
+import {checkRegisterType} from "../middlewares/register-type.middleware";
 
 export class AuthController {
 
     async register(req: Request, res: Response) {
         try {
             const body = req.body;
-            const error: Record<string, any> = {};
-
-            if(!body.login) {
-                error.login = "missing parameter"
-            }
-            if(!body.password) {
-                error.password = "missing parameter"
-            }
-            if(!body.type) {
-                error.type = "missing parameter"
-            }
-
-            if (Object.keys(error).length !== 0) {
-                res.status(400).send(error).end();
-                return;
-            }
 
             const user = await AuthService.getInstance().register({
                 login: body.login,
@@ -64,7 +49,7 @@ export class AuthController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.post('/register', express.json(), this.register.bind(this));
+        router.post('/register', express.json(), checkRegisterType(), this.register.bind(this));
         router.post('/login', express.json(), this.logIn.bind(this));
         router.get('/me', checkAuth(), this.me.bind(this));
         return router;
