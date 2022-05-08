@@ -61,6 +61,6 @@ export class AuthService {
         content.iat = new Date(content.iat * 1000).toISOString();
         content.exp = new Date(content.exp * 1000).toISOString();
 
-        return content
+        return content;
     }
 }

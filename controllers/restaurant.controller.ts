@@ -1,6 +1,7 @@
 import express, {Router, Request, Response} from "express";
 import {RestaurantService} from "../services";
 import {checkAuth} from "../middlewares";
+import {checkUserType} from "../middlewares/user-type.middleware";
 
 export class RestaurantController {
 
@@ -91,12 +92,12 @@ export class RestaurantController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        //router.use(checkAuth());
-        router.post('/', express.json(), this.createRestaurant.bind(this));
+        router.use(checkAuth());
+        router.post('/', checkUserType([1]), express.json(), this.createRestaurant.bind(this));
         router.get('/', this.getAllRestaurants.bind(this));
         router.get('/:id', this.getOneRestaurant.bind(this));
-        router.delete('/:id', this.deleteRestaurant.bind(this));
-        router.put('/:id', express.json(), this.updateRestaurant.bind(this));
+        router.delete('/:id', checkUserType([1]), this.deleteRestaurant.bind(this));
+        router.put('/:id', checkUserType([1, 2]), express.json(), this.updateRestaurant.bind(this));
         return router;
     }
 }
