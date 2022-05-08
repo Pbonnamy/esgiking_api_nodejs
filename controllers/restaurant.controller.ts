@@ -1,31 +1,30 @@
 import express, {Router, Request, Response} from "express";
 import {RestaurantService} from "../services";
-import {checkAuth} from "../middlewares";
-import {checkUserType} from "../middlewares/user-type.middleware";
+import {checkAuth, checkUserType} from "../middlewares";
 
 export class RestaurantController {
 
     async createRestaurant(req: Request, res: Response) {
-        const body = req.body;
-
-        const error: Record<string, any> = {};
-
-        if(!body.name) {
-            error.name = "missing parameter"
-        }
-        if(!body.address) {
-            error.address = "missing parameter"
-        }
-        if(!body.phone) {
-            error.phone = "missing parameter"
-        }
-
-        if (Object.keys(error).length !== 0) {
-            res.status(400).send(error).end();
-            return;
-        }
-
         try {
+            const body = req.body;
+
+            const error: Record<string, any> = {};
+
+            if(!body.name) {
+                error.name = "missing parameter"
+            }
+            if(!body.address) {
+                error.address = "missing parameter"
+            }
+            if(!body.phone) {
+                error.phone = "missing parameter"
+            }
+
+            if (Object.keys(error).length !== 0) {
+                res.status(400).send(error).end();
+                return;
+            }
+
             const restaurant = await RestaurantService.getInstance().createOne({
                 name: body.name,
                 address: body.address,
@@ -92,12 +91,11 @@ export class RestaurantController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.use(checkAuth());
-        router.post('/', checkUserType([1]), express.json(), this.createRestaurant.bind(this));
+        router.post('/', [checkAuth(), checkUserType([1])], express.json(), this.createRestaurant.bind(this));
         router.get('/', this.getAllRestaurants.bind(this));
         router.get('/:id', this.getOneRestaurant.bind(this));
-        router.delete('/:id', checkUserType([1]), this.deleteRestaurant.bind(this));
-        router.put('/:id', checkUserType([1, 2]), express.json(), this.updateRestaurant.bind(this));
+        router.delete('/:id', [checkAuth(), checkUserType([1])], this.deleteRestaurant.bind(this));
+        router.put('/:id', [checkAuth(), checkUserType([1, 2])], express.json(), this.updateRestaurant.bind(this));
         return router;
     }
 }

@@ -27,7 +27,6 @@ const userSchema = new Schema({
 });
 
 export interface UserProps {
-    _id: string;
     type: UserTypeProps
     login: string;
     password?: string;

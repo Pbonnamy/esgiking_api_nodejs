@@ -7,10 +7,13 @@
     - "sourceMap": true,
     - "outDir": "./dist",
 - `npx tsc`
----
+
+
 - `npm run build`
 - `npm run start`
 ---
+
+**USERS**
 - /auth
   - /login `(POST)`
     - login
@@ -22,7 +25,7 @@
     - restaurant `(only if type 2 or 3)`
   - /me `(GET)`
 
-
+**RESTAURANTS**
 - /restaurants
   - `(POST)` -> create
     - name
@@ -37,3 +40,13 @@
     - address `(optionnal)`
     - phone `(optionnal)`
     - description `(optionnal)`
+
+**DISHES**
+- /restaurants/{restaurant}/dishes `(GET)` -> show all
+- /restaurants/{restaurant}/dishes `(POST)` -> create one
+  - name
+  - price
+- /dishes/{id} `(PUT)` -> update one
+  - name `(optionnal)`
+  - price `(optionnal)`
+- /dishes/{id} `(DELETE)` -> delete one

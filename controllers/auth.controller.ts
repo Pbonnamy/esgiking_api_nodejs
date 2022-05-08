@@ -1,7 +1,6 @@
 import express, {Request, Response, Router} from "express";
 import {AuthService} from "../services";
-import {checkAuth} from "../middlewares";
-import {checkRegisterType} from "../middlewares/register-type.middleware";
+import {checkAuth, checkRegisterType} from "../middlewares";
 
 export class AuthController {
 
