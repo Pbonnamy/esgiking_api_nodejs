@@ -11,6 +11,7 @@ const restaurantSchema = new Schema({
     },
     phone: {
         type: Schema.Types.String,
+        required: true
     },
     description: {
         type: Schema.Types.String,

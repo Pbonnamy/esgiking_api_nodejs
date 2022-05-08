@@ -24,11 +24,13 @@ export class AuthService {
         const model = new UserModel({
             login: props.login,
             password: AuthUtil.sha512(props.password),
-            type: props.type
+            type: props.type,
+            restaurant: props.restaurant
         });
 
         const user = await model.save();
         await user.populate("type");
+        await user.populate("restaurant");
 
         return user;
     }

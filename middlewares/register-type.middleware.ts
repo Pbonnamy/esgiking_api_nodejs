@@ -17,6 +17,13 @@ export function checkRegisterType(): RequestHandler {
             }
             if(!body.type) {
                 error.type = "missing parameter"
+            } else {
+                if ((body.type === 2 || body.type === 3) && !body.restaurant) {
+                    error.restaurant = "missing parameter"
+                } else if ((body.type === 4) && body.restaurant){
+                    res.status(400).end();
+                    return;
+                }
             }
 
             if (Object.keys(error).length !== 0) {

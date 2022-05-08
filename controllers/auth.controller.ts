@@ -12,7 +12,8 @@ export class AuthController {
             const user = await AuthService.getInstance().register({
                 login: body.login,
                 password: body.password,
-                type: body.type
+                type: body.type,
+                restaurant: body.restaurant
             });
 
             user.password = undefined
