@@ -57,7 +57,6 @@ export class RestaurantController {
             res.json(restaurant);
         } catch(err) {
             res.status(400).end();
-            return;
         }
     }
 

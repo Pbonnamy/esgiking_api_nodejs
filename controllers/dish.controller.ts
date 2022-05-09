@@ -40,6 +40,19 @@ export class DishController {
         }
     }
 
+    async getOneDish(req: Request, res: Response) {
+        try {
+            const dish = await DishService.getInstance().getOneById(req.params.id);
+            if(!dish) {
+                res.status(404).send({error : "Dish not found"}).end();
+                return;
+            }
+            res.json(dish);
+        } catch(err) {
+            res.status(400).end();
+        }
+    }
+
     async getAllDishes(req: Request, res: Response) {
         try {
             const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
@@ -59,7 +72,7 @@ export class DishController {
     async deleteDish(req: Request, res: Response) {
         try {
             const success = await DishService.getInstance().deleteById(req.params.id);
-            
+
             if(success) {
                 res.status(200).send({message : "Dish successfully deleted"}).end();
             } else {
@@ -87,10 +100,11 @@ export class DishController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.post('/restaurants/:restaurant/dishes', [checkAuth(), checkUserType([1, 2])], express.json(), this.createDish.bind(this));
-        router.get('/restaurants/:restaurant/dishes', this.getAllDishes.bind(this));
-        router.delete('/dishes/:id', [checkAuth(), checkUserType([1, 2])], this.deleteDish.bind(this));
-        router.put('/dishes/:id', [checkAuth(), checkUserType([1, 2])], express.json(), this.updateDish.bind(this));
+        router.post('/:restaurant/dishes', [checkAuth(), checkUserType([1, 2])], express.json(), this.createDish.bind(this));
+        router.get('/:restaurant/dishes', this.getAllDishes.bind(this));
+        router.get('/:restaurant/dishes/:id', this.getOneDish.bind(this));
+        router.delete('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2])], this.deleteDish.bind(this));
+        router.put('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2])], express.json(), this.updateDish.bind(this));
         return router;
     }
 }
