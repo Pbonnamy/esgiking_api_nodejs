@@ -18,8 +18,8 @@ export class MenuService {
         return await model.save();
     }
 
-    async getAll(): Promise<MenuDocument[]> {
-        return MenuModel.find().exec();
+    async getAll(restaurant_id: string): Promise<MenuDocument[]> {
+        return MenuModel.find({restaurant: restaurant_id}).exec();
     }
 
     async getOneById(id: string): Promise<MenuDocument | null> {

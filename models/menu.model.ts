@@ -7,9 +7,12 @@ const menuSchema = new Schema({
     },
     price: {
         type: Schema.Types.Number,
+        required: true
     },
     dishes: {
-        type: Schema.Types.Array,
+        type: Schema.Types.ObjectId,
+        ref: "Dishes",
+        required: true
     },
 }, {
     collection: "menus",
@@ -20,7 +23,7 @@ const menuSchema = new Schema({
 export interface MenuProps {
     name: string;
     price: number;
-    dishes: string;
+    dishes: DishProps;
 }
 
 export type MenuDocument = MenuProps & Document;

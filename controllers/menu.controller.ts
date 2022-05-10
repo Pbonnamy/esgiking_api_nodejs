@@ -1,5 +1,5 @@
 import express, {Router, Request, Response} from "express";
-import {MenuService} from "../services/menu.service";
+import {MenuService, RestaurantService} from "../services";
 
 export class MenuController {
     async createMenu(req: Request, res: Response) {
@@ -13,9 +13,6 @@ export class MenuController {
         if(!body.price) {
             error.price = "missing parameter"
         }
-        if(!body.dishes) {
-            error.dishes = "missing parameter"
-        }
 
         if (Object.keys(error).length !== 0) {
             res.status(400).send(error).end();
@@ -26,7 +23,7 @@ export class MenuController {
             const menu = await MenuService.getInstance().createOne({
                 name: body.name,
                 price: body.price,
-                dishes: body.dishes,
+                dishes: dish
             });
 
             res.json(menu);
@@ -37,12 +34,20 @@ export class MenuController {
 
     async getAllMenus(req: Request, res: Response) {
         try {
-            const menus = await MenuService.getInstance().getAll();
+            const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
+
+            if(!restaurant) {
+                res.status(404).send({error : "Restaurant not found"}).end();
+                return;
+            }
+
+            const menus = await MenuService.getInstance().getAll(req.params.restaurant);
             res.json(menus);
         } catch(err) {
             res.status(500).end();
         }
     }
+
 
     async getOneMenu(req: Request, res: Response) {
         try {
