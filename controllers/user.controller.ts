@@ -1,5 +1,6 @@
 import express, {Router, Request, Response} from "express";
 import {checkAuth, checkUserType} from "../middlewares";
+import { RestaurantDocument } from "../models";
 import {RestaurantService, UserService} from "../services";
 
 export class UserController {
@@ -7,26 +8,36 @@ export class UserController {
     async getOneUser(req: Request, res: Response) {
         try {
             const user = await UserService.getInstance().getOneById(req.params.id);
-            if(!user) {
-                res.status(404).send({error : "User not found"}).end();
+            if (!user) {
+                res.status(404).send({error: "User not found"}).end();
                 return;
             }
             res.json(user);
-        } catch(err) {
+        } catch (err) {
             res.status(400).end();
         }
     }
 
     async getAllUsers(req: Request, res: Response) {
         try {
-            const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
 
-            if(!restaurant) {
-                res.status(404).send({error : "Restaurant not found"}).end();
-                return;
+            let restaurant: RestaurantDocument | null = null;
+
+            if (req.query.restaurant) {
+                if (typeof req.query.restaurant !== 'string') {
+                    res.status(400).end();
+                    return;
+                }
+                restaurant = await RestaurantService.getInstance().getOneById(req.query.restaurant);
+
+                if(!restaurant) {
+                    res.status(404).send({error : "Restaurant not found"}).end();
+                    return;
+                }
+
             }
 
-            const users = await UserService.getInstance().getAll(req.params.restaurant);
+            const users = await UserService.getInstance().getAll(restaurant?.id);
             res.json(users);
         } catch(err) {
             res.status(500).end();

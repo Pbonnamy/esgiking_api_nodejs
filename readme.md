@@ -7,7 +7,8 @@
     - "sourceMap": true,
     - "outDir": "./dist",
 - `npx tsc`
-
+- create .env & fill vars
+  - secret : any strong random string
 
 - `npm run build`
 - `npm run start`

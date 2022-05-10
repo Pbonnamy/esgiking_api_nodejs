@@ -1,7 +1,7 @@
 import {config} from "dotenv";
 import express from 'express';
 import {Request, Response} from "express";
-import mongoose, {Mongoose} from "mongoose";
+import mongoose from "mongoose";
 import {AuthController, DishController, RestaurantController, UserController} from "./controllers";
 import {SeedUtil} from "./utils";
 
