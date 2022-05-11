@@ -17,14 +17,14 @@ export class UserService {
         const filter: Record<string, any> = {};
 
         if (restaurant_id) {
-            filter.restaurant = restaurant_id
+            filter.restaurant = restaurant_id;
         }
 
-        return UserModel.find(filter).exec();
+        return UserModel.find(filter).populate("restaurant").exec();
     }
 
     async getOneById(id: string): Promise<UserDocument | null> {
-        return UserModel.findById(id).exec();
+        return UserModel.findById(id).populate("restaurant").exec();
     }
 
     async deleteById(id: string): Promise<boolean> {

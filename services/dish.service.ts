@@ -12,7 +12,7 @@ export class DishService {
 
     private constructor() { }
 
-    public async createOne(props: DishProps): Promise<DishDocument> {
+    public async createOne(props: Partial<DishProps>): Promise<DishDocument> {
         const model = new DishModel(props);
         return await model.save();
     }

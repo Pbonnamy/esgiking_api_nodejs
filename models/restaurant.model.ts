@@ -23,6 +23,7 @@ const restaurantSchema = new Schema({
 });
 
 export interface RestaurantProps {
+    _id: string;
     name: string;
     address: string;
     phone: string;

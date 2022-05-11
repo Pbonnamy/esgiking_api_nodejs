@@ -22,6 +22,7 @@ const dishSchema = new Schema({
 });
 
 export interface DishProps {
+    _id: string;
     name: string;
     price: number;
     restaurant: RestaurantProps;

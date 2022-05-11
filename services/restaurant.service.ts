@@ -1,4 +1,4 @@
-import {RestaurantDocument, RestaurantModel, RestaurantProps} from "../models";
+import {RestaurantDocument, RestaurantModel, RestaurantProps, UserProps} from "../models";
 
 
 export class RestaurantService {
@@ -13,7 +13,7 @@ export class RestaurantService {
 
     private constructor() { }
 
-    public async createOne(props: RestaurantProps): Promise<RestaurantDocument> {
+    public async createOne(props: Partial<RestaurantProps>): Promise<RestaurantDocument> {
         const model = new RestaurantModel(props);
         return await model.save();
     }

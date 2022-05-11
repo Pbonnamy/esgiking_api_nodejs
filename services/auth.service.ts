@@ -16,7 +16,7 @@ export class AuthService {
 
     private constructor() { }
 
-    public async register(props: UserProps): Promise<UserDocument> {
+    public async register(props: Partial<UserProps>): Promise<UserDocument> {
         if(!props.password) {
             throw new Error('Missing parameters');
         }
