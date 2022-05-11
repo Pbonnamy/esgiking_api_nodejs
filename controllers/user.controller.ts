@@ -1,7 +1,8 @@
 import express, {Router, Request, Response} from "express";
-import {checkAuth, checkUserType} from "../middlewares";
+import {checkAllUsers, checkAuth, checkUserType} from "../middlewares";
 import { RestaurantDocument } from "../models";
 import {RestaurantService, UserService} from "../services";
+import {checkUser} from "../middlewares/user.middleware";
 
 export class UserController {
 
@@ -75,10 +76,10 @@ export class UserController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.get('/', [checkAuth(), checkUserType([1, 2])], this.getAllUsers.bind(this));
-        router.get('/:id', checkAuth(), this.getOneUser.bind(this));
-        router.delete('/:id', [checkAuth(), checkUserType([1, 2])], this.deleteUser.bind(this));
-        router.put('/:id', [checkAuth(), checkUserType([1, 2, 4])], express.json(), this.updateUser.bind(this));
+        router.get('/', [checkAuth(), checkUserType([1, 2]), checkAllUsers()], this.getAllUsers.bind(this));
+        router.get('/:id', [checkAuth(), checkUser()], this.getOneUser.bind(this));
+        router.delete('/:id', [checkAuth(), checkUserType([1, 2]), checkUser()], this.deleteUser.bind(this));
+        router.put('/:id', [checkAuth(), checkUserType([1, 2, 4]), checkUser()], express.json(), this.updateUser.bind(this));
         return router;
     }
 }
