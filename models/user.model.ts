@@ -26,6 +26,12 @@ const userSchema = new Schema({
     versionKey: false
 });
 
+userSchema.methods.toJSON = function() {
+    const obj = this.toObject();
+    delete obj.password;
+    return obj;
+}
+
 export interface UserProps {
     _id: string;
     type: UserTypeProps
