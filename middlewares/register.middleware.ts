@@ -14,7 +14,7 @@ export function checkRegisterType(): RequestHandler {
                 error.login = "missing parameter"
             } else {
                 const user = await UserService.getInstance().getOneByLogin(body.login);
-                
+
                 if (user.length) {
                     error.login = "already exist"
                 }
