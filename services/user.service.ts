@@ -27,6 +27,10 @@ export class UserService {
         return UserModel.findById(id).populate("restaurant").exec();
     }
 
+    async getOneByLogin(login: string): Promise<UserDocument[]> {
+        return UserModel.find({login : login}).exec();
+    }
+
     async deleteById(id: string): Promise<boolean> {
         const res = await UserModel.deleteOne({_id: id}).exec();
         return res.deletedCount === 1;

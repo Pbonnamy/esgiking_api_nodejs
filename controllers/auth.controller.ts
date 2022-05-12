@@ -8,14 +8,6 @@ export class AuthController {
         try {
             const body = req.body;
 
-            if (body.restaurant) {
-                const restaurant = await RestaurantService.getInstance().getOneById(body.restaurant);
-                if(!restaurant) {
-                    res.status(404).send({error : "Restaurant not found"}).end();
-                    return;
-                }
-            }
-
             const user = await AuthService.getInstance().register({
                 login: body.login,
                 password: body.password,

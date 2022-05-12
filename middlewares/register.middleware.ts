@@ -1,5 +1,6 @@
 import {Request, RequestHandler} from "express";
 import {AuthUtil} from "../utils";
+import {RestaurantService, UserService} from "../services";
 
 const jwt = require('jsonwebtoken')
 
@@ -11,6 +12,12 @@ export function checkRegisterType(): RequestHandler {
 
             if(!body.login) {
                 error.login = "missing parameter"
+            } else {
+                const user = await UserService.getInstance().getOneByLogin(body.login);
+                
+                if (user.length) {
+                    error.login = "already exist"
+                }
             }
             if(!body.password) {
                 error.password = "missing parameter"
@@ -18,8 +25,15 @@ export function checkRegisterType(): RequestHandler {
             if(!body.type) {
                 error.type = "missing parameter"
             } else {
-                if ((body.type === 2 || body.type === 3) && !body.restaurant) {
-                    error.restaurant = "missing parameter"
+                if (body.type === 2 || body.type === 3) {
+                    if (!body.restaurant) {
+                        error.restaurant = "missing parameter"
+                    } else {
+                        const restaurant = await RestaurantService.getInstance().getOneById(body.restaurant);
+                        if(!restaurant) {
+                            error.restaurant = "not found";
+                        }
+                    }
                 } else if ((body.type === 4) && body.restaurant){
                     res.status(400).end();
                     return;

@@ -1,5 +1,5 @@
 export * from './auth.middleware'
-export * from './register-type.middleware'
+export * from './register.middleware'
 export * from './user-type.middleware'
 export * from './restaurant.middleware'
 export * from './dish.middleware'
