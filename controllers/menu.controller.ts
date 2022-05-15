@@ -1,23 +1,10 @@
 import express, {Router, Request, Response} from "express";
 import { MenuService, RestaurantService } from "../services";
+import {checkAuth, checkMenu, checkUserType, existRestaurant, ownedRestaurant} from "../middlewares";
 
 export class MenuController {
     async createMenu(req: Request, res: Response) {
         const body = req.body;
-        const error: Record<string, any> = {};
-
-        if(!body.name) {
-            error.name = "missing parameter"
-        }
-
-        if(!body.price) {
-            error.price = "missing parameter"
-        }
-
-        if (Object.keys(error).length !== 0) {
-            res.status(400).send(error).end();
-            return;
-        }
 
         try {
             const menu = await MenuService.getInstance().createOne({
@@ -34,13 +21,6 @@ export class MenuController {
 
     async getAllMenus(req: Request, res: Response) {
         try {
-            const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
-
-            if(!restaurant) {
-                res.status(404).send({error : "Restaurant not found"}).end();
-                return;
-            }
-
             const menus = await MenuService.getInstance().getAll(req.params.restaurant);
             res.json(menus);
         } catch(err) {
@@ -94,11 +74,11 @@ export class MenuController {
     buildRoutes(): Router {
         const router = express.Router();
         router.use(express.json());
-        router.post('/:restaurant/menus', this.createMenu.bind(this));
-        router.get('/:restaurant/menus', this.getAllMenus.bind(this));
-        router.get('/:restaurant/menus/:id', this.getOneMenu.bind(this));
-        router.delete('/:restaurant/menus/:id', this.deleteMenu.bind(this));
-        router.put('/:restaurant/menus/:id', this.updateMenu.bind(this));
+        router.post('/:restaurant/menus', [checkAuth(), checkUserType([1, 2]), existRestaurant("restaurant"), ownedRestaurant("restaurant"), checkMenu(true)], this.createMenu.bind(this));
+        router.get('/:restaurant/menus',existRestaurant("restaurant"), this.getAllMenus.bind(this));
+        router.get('/:restaurant/menus/:id', existRestaurant("restaurant"), this.getOneMenu.bind(this));
+        router.delete('/:restaurant/menus/:id', [checkAuth(), checkUserType([1, 2]), existRestaurant("restaurant"), ownedRestaurant("restaurant")], this.deleteMenu.bind(this));
+        router.put('/:restaurant/menus/:id', [checkAuth(), checkUserType([1, 2]), existRestaurant("restaurant"), ownedRestaurant("restaurant"), checkMenu()], this.updateMenu.bind(this));
         return router;
     }
 }
