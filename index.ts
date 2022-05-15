@@ -34,6 +34,9 @@ async function startServer(): Promise<void> {
     app.use('/restaurants', dishController.buildRoutes());
     const orderController = new OrderController();
     app.use('/restaurants', orderController.buildRoutes());
+    const menuController = new MenuController();
+    app.use('/menus', menuController.buildRoutes())
+
 
     app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);
