@@ -1,6 +1,6 @@
 import express, {Router, Request, Response} from "express";
 import {RestaurantService} from "../services";
-import {checkAuth, checkUserType, ownedRestaurant} from "../middlewares";
+import {checkAuth, checkUserType, existRestaurant, ownedRestaurant} from "../middlewares";
 
 export class RestaurantController {
 
@@ -50,10 +50,7 @@ export class RestaurantController {
     async getOneRestaurant(req: Request, res: Response) {
         try {
             const restaurant = await RestaurantService.getInstance().getOneById(req.params.id);
-            if(!restaurant) {
-                res.status(404).send({error : "Restaurant not found"}).end();
-                return;
-            }
+
             res.json(restaurant);
         } catch(err) {
             res.status(400).end();
@@ -77,11 +74,6 @@ export class RestaurantController {
         try {
             const restaurant = await RestaurantService.getInstance().updateById(req.params.id, req.body);
 
-            if(!restaurant) {
-                res.status(404).send({error : "Restaurant not found"}).end();
-                return;
-            }
-
             res.json(restaurant);
         } catch (err) {
             res.status(400).end();
@@ -92,9 +84,9 @@ export class RestaurantController {
         const router = express.Router();
         router.post('/', [checkAuth(), checkUserType([1])], express.json(), this.createRestaurant.bind(this));
         router.get('/', this.getAllRestaurants.bind(this));
-        router.get('/:id', this.getOneRestaurant.bind(this));
-        router.delete('/:id', [checkAuth(), checkUserType([1])], this.deleteRestaurant.bind(this));
-        router.put('/:id', [checkAuth(), checkUserType([1, 2]), ownedRestaurant("id")], express.json(), this.updateRestaurant.bind(this));
+        router.get('/:id', existRestaurant("id"), this.getOneRestaurant.bind(this));
+        router.delete('/:id', [checkAuth(), checkUserType([1]), existRestaurant("id")], this.deleteRestaurant.bind(this));
+        router.put('/:id', [checkAuth(), checkUserType([1, 2]), existRestaurant("id"), ownedRestaurant("id")], express.json(), this.updateRestaurant.bind(this));
         return router;
     }
 }

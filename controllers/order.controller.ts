@@ -1,6 +1,6 @@
 import express, {Router, Request, Response} from "express";
 import {OrderService, RestaurantService} from "../services";
-import {checkOrder} from "../middlewares";
+import {checkOrder, existRestaurant} from "../middlewares";
 
 export class OrderController {
 
@@ -36,13 +36,6 @@ export class OrderController {
 
     async getAllOrders(req: Request, res: Response) {
         try {
-            const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
-
-            if(!restaurant) {
-                res.status(404).send({error : "Restaurant not found"}).end();
-                return;
-            }
-
             const orders = await OrderService.getInstance().getAll(req.params.restaurant);
             res.json(orders);
         } catch(err) {
@@ -82,10 +75,10 @@ export class OrderController {
     buildRoutes(): Router {
         const router = express.Router();
         router.post('/:restaurant/orders', express.json(), checkOrder(false), this.createOrder.bind(this));
-        router.get('/:restaurant/orders', this.getAllOrders.bind(this));
-        router.get('/:restaurant/orders/:id', this.getOneOrder.bind(this));
-        router.delete('/:restaurant/orders/:id', this.deleteOrder.bind(this));
-        router.put('/:restaurant/orders/:id', express.json(), checkOrder(), this.updateOrder.bind(this));
+        router.get('/:restaurant/orders', existRestaurant("restaurant"), this.getAllOrders.bind(this));
+        router.get('/:restaurant/orders/:id', existRestaurant("restaurant"), this.getOneOrder.bind(this));
+        router.delete('/:restaurant/orders/:id', existRestaurant("restaurant"), this.deleteOrder.bind(this));
+        router.put('/:restaurant/orders/:id', express.json(), [existRestaurant("restaurant"), checkOrder()], this.updateOrder.bind(this));
         return router;
     }
 }

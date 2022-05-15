@@ -3,7 +3,6 @@ import {AuthUtil} from "../utils";
 
 const jwt = require('jsonwebtoken')
 
-//user authenticated
 export function checkAuth(): RequestHandler {
     return async function(req: Request, res, next) {
         try {
