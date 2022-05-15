@@ -1,42 +1,26 @@
-import {RestaurantModel, UserTypeModel} from "../models";
+import {DishesSeeder, RestaurantsSeeder, UsersSeeder, UserTypesSeeder} from "./seeders";
+import {DishModel, OrderModel, RestaurantModel, UserModel, UserTypeModel} from "../models";
 
 export class SeedUtil {
-    public static async seedUserTypes() {
-        const types = [
-            {
-                id: 1,
-                name: "root"
-            },
-            {
-                id: 2,
-                name: "admin"
-            },
-            {
-                id: 3,
-                name: "employee"
-            },
-            {
-                id: 4,
-                name: "client"
-            }
-        ];
+    public static async seed(test: boolean = false, clean: boolean = false) {
+        if (clean) {
+            await this.erase();
+        }
 
-        for (const type of types) {
-            const exist = await UserTypeModel.findById(type.id).exec()
+        await UserTypesSeeder.seed();
 
-            if (!exist) {
-                await new UserTypeModel({
-                    _id: type.id,
-                    name: type.name
-                }).save();
-            } else {
-                exist.name = type.name
-                await exist.save();
-            }
+        if (test) {
+            const restaurant = await RestaurantsSeeder.seed();
+            await UsersSeeder.seed(restaurant);
+            await DishesSeeder.seed(restaurant);
         }
     }
 
-    public static async seed() {
-        await this.seedUserTypes();
+    public static async erase() {
+        await RestaurantModel.deleteMany();
+        await OrderModel.deleteMany();
+        await UserModel.deleteMany();
+        await UserTypeModel.deleteMany();
+        await DishModel.deleteMany();
     }
 }

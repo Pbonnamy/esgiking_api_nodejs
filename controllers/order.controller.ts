@@ -15,12 +15,22 @@ export class OrderController {
             const body = req.body;
             const error: Record<string, any> = {};
 
+            if (!body.dishes) {
+                error.dishes = "missing parameter";
+            } else {
+                body.dishes.forEach((el: string) => {
+                    console.log(el)
+                })
+            }
+
             if (Object.keys(error).length !== 0) {
                 res.status(400).send(error).end();
                 return;
             }
 
             const order = await OrderService.getInstance().createOne({
+
+                restaurant : restaurant,
             });
 
             res.json(order);
