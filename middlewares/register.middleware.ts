@@ -2,7 +2,6 @@ import {Request, RequestHandler} from "express";
 import {AuthUtil} from "../utils";
 import {RestaurantService, UserService} from "../services";
 import {UserTypeModel} from "../models";
-import { userInfo } from "os";
 
 const jwt = require('jsonwebtoken')
 
