@@ -1,39 +1,21 @@
 import express, {Router, Request, Response} from "express";
-import {OrderService, RestaurantService} from "../services";
+import {DishService, OrderService, RestaurantService, UserService} from "../services";
+import {checkOrder} from "../middlewares";
 
 export class OrderController {
 
     async createOrder(req: Request, res: Response) {
         try {
-            const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
-
-            if(!restaurant) {
-                res.status(404).send({error : "Restaurant not found"}).end();
-                return;
-            }
-
             const body = req.body;
-            const error: Record<string, any> = {};
-
-            if (!body.dishes) {
-                error.dishes = "missing parameter";
-            } else {
-                body.dishes.forEach((el: string) => {
-                    console.log(el)
-                })
-            }
-
-            if (Object.keys(error).length !== 0) {
-                res.status(400).send(error).end();
-                return;
-            }
 
             const order = await OrderService.getInstance().createOne({
-
-                restaurant : restaurant,
+                dishes: body.dishes,
+                client: body.client,
+                restaurant : body.restaurant,
             });
 
             res.json(order);
+
         } catch(err) {
             res.status(400).end();
         }
@@ -99,11 +81,11 @@ export class OrderController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.post('/:restaurant/orders', express.json(), this.createOrder.bind(this));
+        router.post('/:restaurant/orders', express.json(), checkOrder(false), this.createOrder.bind(this));
         router.get('/:restaurant/orders', this.getAllOrders.bind(this));
         router.get('/:restaurant/orders/:id', this.getOneOrder.bind(this));
         router.delete('/:restaurant/orders/:id', this.deleteOrder.bind(this));
-        router.put('/:restaurant/orders/:id', express.json(), this.updateOrder.bind(this));
+        router.put('/:restaurant/orders/:id', express.json(), checkOrder(), this.updateOrder.bind(this));
         return router;
     }
 }

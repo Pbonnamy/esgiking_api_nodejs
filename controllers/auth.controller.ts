@@ -1,5 +1,5 @@
 import express, {Request, Response, Router} from "express";
-import {AuthService, RestaurantService} from "../services";
+import {AuthService} from "../services";
 import {checkAuth, checkRegisterType} from "../middlewares";
 
 export class AuthController {

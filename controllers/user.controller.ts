@@ -1,8 +1,7 @@
 import express, {Router, Request, Response} from "express";
-import {checkAllUsers, checkAuth, checkUserType} from "../middlewares";
+import {checkAllUsers, checkAuth, checkUserType, checkUser} from "../middlewares";
 import { RestaurantDocument } from "../models";
 import {RestaurantService, UserService} from "../services";
-import {checkUser} from "../middlewares/user.middleware";
 
 export class UserController {
 

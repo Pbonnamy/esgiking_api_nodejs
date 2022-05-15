@@ -14,16 +14,25 @@ export class OrderService {
 
 
     public async createOne(props: Partial<OrderProps>): Promise<OrderDocument> {
+        let price = 0;
+
+        if (props.dishes) {
+            props.dishes.forEach((el) => {
+                price += el.price;
+            })
+        }
+
+        props.price = price;
         const model = new OrderModel(props);
         return await model.save();
     }
 
     async getAll(restaurant: string): Promise<OrderDocument[]> {
-        return OrderModel.find({restaurant: restaurant}).exec();
+        return OrderModel.find({restaurant: restaurant}).populate("dishes").exec();
     }
 
     async getOneById(id: string): Promise<OrderDocument | null> {
-        return OrderModel.findById(id).exec();
+        return OrderModel.findById(id).populate("dishes").exec();
     }
 
     async deleteById(id: string): Promise<boolean> {
@@ -37,9 +46,16 @@ export class OrderService {
             return null;
         }
 
-        /*if(props.name !== undefined) {
-            dish.name = props.name;
-        }*/
+        if(props.dishes !== undefined) {
+            let price = 0;
+            order.dishes = props.dishes;
+
+            props.dishes.forEach((el) => {
+                price += el.price;
+            })
+
+            order.price = price
+        }
 
         return await order.save();
     }
