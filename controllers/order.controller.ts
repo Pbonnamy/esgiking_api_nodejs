@@ -1,5 +1,5 @@
 import express, {Router, Request, Response} from "express";
-import {DishService, OrderService, RestaurantService, UserService} from "../services";
+import {OrderService, RestaurantService} from "../services";
 import {checkOrder} from "../middlewares";
 
 export class OrderController {

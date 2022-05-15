@@ -1,6 +1,6 @@
 import express, {Router, Request, Response} from "express";
 import {DishService, RestaurantService} from "../services";
-import {checkAuth, checkDish, checkUserType} from "../middlewares";
+import {checkAuth, checkUserType, ownedRestaurant} from "../middlewares";
 
 export class DishController {
 
@@ -100,11 +100,11 @@ export class DishController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.post('/:restaurant/dishes', [checkAuth(), checkUserType([1, 2]), checkDish()], express.json(), this.createDish.bind(this));
+        router.post('/:restaurant/dishes', [checkAuth(), checkUserType([1, 2]), ownedRestaurant("restaurant")], express.json(), this.createDish.bind(this));
         router.get('/:restaurant/dishes', this.getAllDishes.bind(this));
         router.get('/:restaurant/dishes/:id', this.getOneDish.bind(this));
-        router.delete('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2]), checkDish()], this.deleteDish.bind(this));
-        router.put('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2]), checkDish()], express.json(), this.updateDish.bind(this));
+        router.delete('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2]), ownedRestaurant("restaurant")], this.deleteDish.bind(this));
+        router.put('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2]), ownedRestaurant("restaurant")], express.json(), this.updateDish.bind(this));
         return router;
     }
 }

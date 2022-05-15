@@ -4,7 +4,7 @@ import {UserService} from "../services";
 
 const jwt = require('jsonwebtoken')
 
-export function checkDish(): RequestHandler {
+export function ownedRestaurant(param: string): RequestHandler {
     return async function(req: Request, res, next) {
         try {
             const token = AuthUtil.getToken(req.headers.authorization);
@@ -13,7 +13,7 @@ export function checkDish(): RequestHandler {
 
             const userData = await UserService.getInstance().getOneById(user.id);
 
-            if (user.type === 2 && userData?.restaurant?._id.toString() !== req.params.restaurant) {
+            if (user.type === 2 && userData?.restaurant?._id.toString() !== req.params[param]) {
                 res.status(401).send({ error: 'Access restricted' }).end();
                 return;
             }

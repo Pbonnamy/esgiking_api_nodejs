@@ -1,6 +1,6 @@
 import express, {Router, Request, Response} from "express";
 import {RestaurantService} from "../services";
-import {checkAuth, checkRestaurant, checkUserType} from "../middlewares";
+import {checkAuth, checkUserType, ownedRestaurant} from "../middlewares";
 
 export class RestaurantController {
 
@@ -94,7 +94,7 @@ export class RestaurantController {
         router.get('/', this.getAllRestaurants.bind(this));
         router.get('/:id', this.getOneRestaurant.bind(this));
         router.delete('/:id', [checkAuth(), checkUserType([1])], this.deleteRestaurant.bind(this));
-        router.put('/:id', [checkAuth(), checkUserType([1, 2]), checkRestaurant()], express.json(), this.updateRestaurant.bind(this));
+        router.put('/:id', [checkAuth(), checkUserType([1, 2]), ownedRestaurant("id")], express.json(), this.updateRestaurant.bind(this));
         return router;
     }
 }
