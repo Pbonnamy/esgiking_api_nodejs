@@ -9,6 +9,8 @@ export function existRestaurant(param: string): RequestHandler {
             if (!restaurant) {
                 res.status(404).send({ error: 'Restaurant not found' }).end();
                 return;
+            } else {
+                req.body.restaurant = restaurant;
             }
 
             next();

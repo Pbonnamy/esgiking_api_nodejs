@@ -49,8 +49,9 @@ export class AuthController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.post('/register', express.json(), checkRegisterType(), this.register.bind(this));
-        router.post('/login', express.json(), this.logIn.bind(this));
+        router.use(express.json())
+        router.post('/register', checkRegisterType(), this.register.bind(this));
+        router.post('/login', this.logIn.bind(this));
         router.get('/me', checkAuth(), this.me.bind(this));
         return router;
     }

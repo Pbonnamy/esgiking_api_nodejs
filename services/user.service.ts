@@ -20,11 +20,11 @@ export class UserService {
             filter.restaurant = restaurant_id;
         }
 
-        return UserModel.find(filter).populate("restaurant").exec();
+        return UserModel.find(filter).populate("restaurant").populate("type").exec();
     }
 
     async getOneById(id: string): Promise<UserDocument | null> {
-        return UserModel.findById(id).populate("restaurant").exec();
+        return UserModel.findById(id).populate("restaurant").populate("type").exec();
     }
 
     async getOneByLogin(login: string): Promise<UserDocument[]> {

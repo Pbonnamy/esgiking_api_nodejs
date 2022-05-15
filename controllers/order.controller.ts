@@ -1,6 +1,9 @@
 import express, {Router, Request, Response} from "express";
-import {OrderService, RestaurantService} from "../services";
-import {checkOrder, existRestaurant} from "../middlewares";
+import {OrderService, UserService} from "../services";
+import {checkAuth, checkOrder, checkUserType, existRestaurant, ownedRestaurant} from "../middlewares";
+import {AuthUtil} from "../utils";
+
+const jwt = require('jsonwebtoken')
 
 export class OrderController {
 
@@ -10,7 +13,7 @@ export class OrderController {
 
             const order = await OrderService.getInstance().createOne({
                 dishes: body.dishes,
-                client: body.client,
+                client: body.user,
                 restaurant : body.restaurant,
             });
 
@@ -74,11 +77,12 @@ export class OrderController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.post('/:restaurant/orders', express.json(), checkOrder(false), this.createOrder.bind(this));
-        router.get('/:restaurant/orders', existRestaurant("restaurant"), this.getAllOrders.bind(this));
-        router.get('/:restaurant/orders/:id', existRestaurant("restaurant"), this.getOneOrder.bind(this));
-        router.delete('/:restaurant/orders/:id', existRestaurant("restaurant"), this.deleteOrder.bind(this));
-        router.put('/:restaurant/orders/:id', express.json(), [existRestaurant("restaurant"), checkOrder()], this.updateOrder.bind(this));
+        router.use(express.json())
+        router.post('/:restaurant/orders', [checkAuth(),existRestaurant("restaurant"), checkUserType([4]), checkOrder()], this.createOrder.bind(this));
+        router.get('/:restaurant/orders', [checkAuth(), existRestaurant("restaurant"), ownedRestaurant("restaurant"), checkUserType([1, 2, 3])], this.getAllOrders.bind(this));
+        router.get('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant")], this.getOneOrder.bind(this));
+        router.delete('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant")], this.deleteOrder.bind(this));
+        router.put('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant"), checkOrder()], this.updateOrder.bind(this));
         return router;
     }
 }

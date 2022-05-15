@@ -1,19 +1,9 @@
 import {Request, RequestHandler} from "express";
-import {AuthUtil} from "../utils";
-import {UserService} from "../services";
-
-const jwt = require('jsonwebtoken')
 
 export function ownedRestaurant(param: string): RequestHandler {
     return async function(req: Request, res, next) {
         try {
-            const token = AuthUtil.getToken(req.headers.authorization);
-            jwt.verify(token, process.env.SECRET);
-            const user = jwt.decode(token, {complete: false})
-
-            const userData = await UserService.getInstance().getOneById(user.id);
-
-            if (user.type === 2 && userData?.restaurant?._id.toString() !== req.params[param]) {
+            if ((req.body.user.type._id === 2 || req.body.user.type._id === 3) && req.body.user.restaurant._id.toString() !== req.params[param]) {
                 res.status(401).send({ error: 'Access restricted' }).end();
                 return;
             }

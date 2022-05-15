@@ -60,6 +60,22 @@ export class UserController {
 
     async updateUser(req: Request, res: Response) {
         try {
+            const body = req.body;
+            const error: Record<string, any> = {};
+
+            if(body.login) {
+                const exist = await UserService.getInstance().getOneByLogin(body.login);
+
+                if (exist.length) {
+                    error.login = "already exist"
+                }
+            }
+
+            if (Object.keys(error).length !== 0) {
+                res.status(400).send(error).end();
+                return;
+            }
+
             const user = await UserService.getInstance().updateById(req.params.id, req.body);
 
             if(!user) {
@@ -75,10 +91,11 @@ export class UserController {
 
     buildRoutes(): Router {
         const router = express.Router();
+        router.use(express.json())
         router.get('/', [checkAuth(), checkUserType([1, 2]), checkAllUsers()], this.getAllUsers.bind(this));
         router.get('/:id', [checkAuth(), checkUser()], this.getOneUser.bind(this));
         router.delete('/:id', [checkAuth(), checkUserType([1, 2]), checkUser()], this.deleteUser.bind(this));
-        router.put('/:id', [checkAuth(), checkUserType([1, 2, 4]), checkUser()], express.json(), this.updateUser.bind(this));
+        router.put('/:id', [checkAuth(), checkUserType([1, 2, 4]), checkUser()], this.updateUser.bind(this));
         return router;
     }
 }

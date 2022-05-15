@@ -82,11 +82,12 @@ export class RestaurantController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.post('/', [checkAuth(), checkUserType([1])], express.json(), this.createRestaurant.bind(this));
+        router.use(express.json())
+        router.post('/', [checkAuth(), checkUserType([1])], this.createRestaurant.bind(this));
         router.get('/', this.getAllRestaurants.bind(this));
         router.get('/:id', existRestaurant("id"), this.getOneRestaurant.bind(this));
         router.delete('/:id', [checkAuth(), checkUserType([1]), existRestaurant("id")], this.deleteRestaurant.bind(this));
-        router.put('/:id', [checkAuth(), checkUserType([1, 2]), existRestaurant("id"), ownedRestaurant("id")], express.json(), this.updateRestaurant.bind(this));
+        router.put('/:id', [checkAuth(), checkUserType([1, 2]), existRestaurant("id"), ownedRestaurant("id")], this.updateRestaurant.bind(this));
         return router;
     }
 }

@@ -1,4 +1,5 @@
 import {Request, RequestHandler} from "express";
+import { UserService } from "../services";
 import {AuthUtil} from "../utils";
 
 const jwt = require('jsonwebtoken')
@@ -9,6 +10,9 @@ export function checkAuth(): RequestHandler {
             const token = AuthUtil.getToken(req.headers.authorization);
 
             jwt.verify(token, process.env.SECRET);
+            const user = jwt.decode(token, {complete: false})
+
+            req.body.user =  await UserService.getInstance().getOneById(user.id);
 
             next();
         } catch(err) {

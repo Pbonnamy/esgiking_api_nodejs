@@ -2,8 +2,8 @@ import {DishesSeeder, RestaurantsSeeder, UsersSeeder, UserTypesSeeder} from "./s
 import {DishModel, OrderModel, RestaurantModel, UserModel, UserTypeModel} from "../models";
 
 export class SeedUtil {
-    public static async seed(test: boolean = false, clean: boolean = false) {
-        if (clean) {
+    public static async seed(test: boolean = false, fresh: boolean = false) {
+        if (fresh) {
             await this.erase();
         }
 

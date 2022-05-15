@@ -95,11 +95,12 @@ export class DishController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.post('/:restaurant/dishes', [checkAuth(), checkUserType([1, 2]), existRestaurant("restaurant"), ownedRestaurant("restaurant")], express.json(), this.createDish.bind(this));
+        router.use(express.json())
+        router.post('/:restaurant/dishes', [checkAuth(), checkUserType([1, 2]), existRestaurant("restaurant"), ownedRestaurant("restaurant")], this.createDish.bind(this));
         router.get('/:restaurant/dishes', existRestaurant("restaurant"), this.getAllDishes.bind(this));
         router.get('/:restaurant/dishes/:id', existRestaurant("restaurant"), this.getOneDish.bind(this));
         router.delete('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2]), existRestaurant("restaurant"), ownedRestaurant("restaurant")], this.deleteDish.bind(this));
-        router.put('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2]), existRestaurant("restaurant"), ownedRestaurant("restaurant")], express.json(), this.updateDish.bind(this));
+        router.put('/:restaurant/dishes/:id', [checkAuth(), checkUserType([1, 2]), existRestaurant("restaurant"), ownedRestaurant("restaurant")], this.updateDish.bind(this));
         return router;
     }
 }

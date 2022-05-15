@@ -1,18 +1,9 @@
 import {Request, RequestHandler} from "express";
-import {DishService, RestaurantService, UserService} from "../services";
+import {DishService} from "../services";
 
-export function checkOrder(partial: boolean = true): RequestHandler {
+export function checkOrder(): RequestHandler {
     return async function(req: Request, res, next) {
         try {
-            const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
-
-            if(!restaurant) {
-                res.status(404).send({error : "Restaurant not found"}).end();
-                return;
-            } else {
-                req.body.restaurant = restaurant;
-            }
-
             const body = req.body;
             const error: Record<string, any> = {};
             const dishes = [];
@@ -37,23 +28,6 @@ export function checkOrder(partial: boolean = true): RequestHandler {
 
                 if (dishes.length !== 0) {
                     req.body.dishes = dishes;
-                }
-            }
-
-            let user = null;
-
-            if (!partial) {
-                if (!body.client) {
-                    error.client = "missing parameter";
-                }else {
-                    user = await UserService.getInstance().getOneById(body.client);
-                    await user?.populate("type");
-
-                    if (!user || user.type._id !== 4) {
-                        error.client = "not found";
-                    } else {
-                        req.body.client= user;
-                    }
                 }
             }
 
