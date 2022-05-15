@@ -1,9 +1,6 @@
 import express, {Router, Request, Response} from "express";
-import {OrderService, UserService} from "../services";
+import {OrderService} from "../services";
 import {checkAuth, checkOrder, checkUserType, existRestaurant, ownedRestaurant} from "../middlewares";
-import {AuthUtil} from "../utils";
-
-const jwt = require('jsonwebtoken')
 
 export class OrderController {
 

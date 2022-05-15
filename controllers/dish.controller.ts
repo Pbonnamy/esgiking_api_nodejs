@@ -6,13 +6,6 @@ export class DishController {
 
     async createDish(req: Request, res: Response) {
         try {
-            const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
-
-            if(!restaurant) {
-                res.status(404).send({error : "Restaurant not found"}).end();
-                return;
-            }
-
             const body = req.body;
             const error: Record<string, any> = {};
 
@@ -31,7 +24,7 @@ export class DishController {
             const dish = await DishService.getInstance().createOne({
                 name: body.name,
                 price: body.price,
-                restaurant: restaurant
+                restaurant: body.restaurant
             });
 
             res.json(dish);
@@ -55,8 +48,6 @@ export class DishController {
 
     async getAllDishes(req: Request, res: Response) {
         try {
-            const restaurant = await RestaurantService.getInstance().getOneById(req.params.restaurant);
-
             const dishes = await DishService.getInstance().getAll(req.params.restaurant);
             res.json(dishes);
         } catch(err) {

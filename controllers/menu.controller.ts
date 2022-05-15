@@ -1,15 +1,15 @@
 import express, {Router, Request, Response} from "express";
-import {MenuService, RestaurantService} from "../services";
+import { MenuService, RestaurantService } from "../services";
 
 export class MenuController {
     async createMenu(req: Request, res: Response) {
         const body = req.body;
-
         const error: Record<string, any> = {};
 
         if(!body.name) {
             error.name = "missing parameter"
         }
+
         if(!body.price) {
             error.price = "missing parameter"
         }
@@ -22,8 +22,8 @@ export class MenuController {
         try {
             const menu = await MenuService.getInstance().createOne({
                 name: body.name,
-                price: body.price,
-                dishes: dish
+                restaurant: body.restaurant,
+                dishes: body.dishes
             });
 
             res.json(menu);
@@ -81,7 +81,7 @@ export class MenuController {
             const menu = await MenuService.getInstance().updateById(req.params.id, req.body);
 
             if(!menu) {
-                res.status(404).send({error : "menu not found"}).end();
+                res.status(404).send({error : "Menu not found"}).end();
                 return;
             }
 
@@ -93,12 +93,12 @@ export class MenuController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        //router.use(checkAuth());
-        router.post('/', express.json(), this.createMenu.bind(this));
-        router.get('/', this.getAllMenus.bind(this));
-        router.get('/:id', this.getOneMenu.bind(this));
-        router.delete('/:id', this.deleteMenu.bind(this));
-        router.put('/:id', express.json(), this.updateMenu.bind(this));
+        router.use(express.json());
+        router.post('/:restaurant/menus', this.createMenu.bind(this));
+        router.get('/:restaurant/menus', this.getAllMenus.bind(this));
+        router.get('/:restaurant/menus/:id', this.getOneMenu.bind(this));
+        router.delete('/:restaurant/menus/:id', this.deleteMenu.bind(this));
+        router.put('/:restaurant/menus/:id', this.updateMenu.bind(this));
         return router;
     }
 }

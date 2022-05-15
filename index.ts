@@ -2,7 +2,14 @@ import {config} from "dotenv";
 import express from 'express';
 import {Request, Response} from "express";
 import mongoose from "mongoose";
-import {AuthController, DishController, OrderController, RestaurantController, UserController} from "./controllers";
+import {
+    AuthController,
+    DishController,
+    MenuController,
+    OrderController,
+    RestaurantController,
+    UserController
+} from "./controllers";
 import {SeedUtil} from "./utils";
 
 config();
@@ -35,7 +42,7 @@ async function startServer(): Promise<void> {
     const orderController = new OrderController();
     app.use('/restaurants', orderController.buildRoutes());
     const menuController = new MenuController();
-    app.use('/menus', menuController.buildRoutes())
+    app.use('/restaurants', menuController.buildRoutes())
 
 
     app.listen(process.env.PORT, function () {

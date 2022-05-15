@@ -1,4 +1,4 @@
-import {MenuDocument, MenuModel, MenuProps} from "../models/menu.model";
+import {MenuDocument, MenuModel, MenuProps} from "../models";
 
 
 export class MenuService {
@@ -13,7 +13,7 @@ export class MenuService {
 
     private constructor() { }
 
-    public async createOne(props: MenuProps): Promise<MenuDocument> {
+    public async createOne(props: Partial<MenuProps>): Promise<MenuDocument> {
         const model = new MenuModel(props);
         return await model.save();
     }
