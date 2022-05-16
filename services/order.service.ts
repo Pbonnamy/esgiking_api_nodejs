@@ -22,17 +22,24 @@ export class OrderService {
             })
         }
 
-        props.price = price;
+        if (props.menus) {
+            props.menus.forEach((el) => {
+                price += el.price;
+            })
+        }
+
+        props.price = Number(price.toFixed(2));
+
         const model = new OrderModel(props);
         return await model.save();
     }
 
     async getAll(filter: object): Promise<OrderDocument[]> {
-        return OrderModel.find(filter).populate("dishes").populate("client").exec();
+        return OrderModel.find(filter).populate("dishes").populate("menus").populate("client").exec();
     }
 
     async getOneById(id: string): Promise<OrderDocument | null> {
-        return OrderModel.findById(id).populate("dishes").populate("client").exec();
+        return OrderModel.findById(id).populate("dishes").populate("menus").populate("client").exec();
     }
 
     async deleteById(id: string): Promise<boolean> {
@@ -46,16 +53,29 @@ export class OrderService {
             return null;
         }
 
+        order.price = 0;
+
         if(props.dishes !== undefined) {
-            let price = 0;
             order.dishes = props.dishes;
 
             props.dishes.forEach((el) => {
-                price += el.price;
+                order.price += el.price;
             })
-
-            order.price = price
+        } else {
+            order.dishes = []
         }
+
+        if(props.menus !== undefined) {
+            order.menus = props.menus;
+            
+            props.menus.forEach((el) => {
+                order.price += el.price;
+            })
+        } else {
+            order.menus = []
+        }
+
+        order.price = Number(order.price.toFixed(2))
 
         return await order.save();
     }

@@ -1,23 +1,39 @@
 import {Request, RequestHandler} from "express";
-import {DishService, RestaurantService} from "../services";
+import {DishService, MenuService} from "../services";
 
 export function checkOrder(): RequestHandler {
     return async function(req: Request, res, next) {
         try {
             const body = req.body;
+            const error: Record<string, any> = {};
 
-            const dishes = await DishService.getInstance().verifyDishes(body);
+            if (body.dishes) {
+                const dishes = await DishService.getInstance().verifyDishes(body);
 
-            if (dishes.error) {
-                res.status(400).send({dishes : dishes.error}).end();
+                if (dishes.error) {
+                    error.dishes = dishes.error
+                }else {
+                    req.body.dishes = dishes.dishes
+                }
+            }
+
+            if(body.menus) {
+                const menus = await MenuService.getInstance().verifyMenus(body);
+
+                if (menus.error) {
+                    error.menus = menus.error
+                }else {
+                    req.body.menus = menus.menus
+                }
+            }
+
+            if (Object.keys(error).length !== 0) {
+                res.status(400).send(error).end();
                 return;
-            }else {
-                req.body.dishes = dishes.dishes
             }
 
             next();
         } catch(err) {
-            console.log(err)
             res.status(400).send().end();
         }
     }

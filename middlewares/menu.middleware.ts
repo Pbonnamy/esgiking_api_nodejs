@@ -32,14 +32,12 @@ export function checkMenu(all: boolean = false): RequestHandler {
             }
 
             if (Object.keys(error).length !== 0) {
-                console.log(error)
                 res.status(400).send(error).end();
                 return;
             }
 
             next();
         } catch(err) {
-            console.log(err)
             res.status(400).send().end();
         }
     }

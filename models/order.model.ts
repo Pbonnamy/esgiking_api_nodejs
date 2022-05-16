@@ -2,6 +2,7 @@ import mongoose, {Schema, Document, Model} from "mongoose";
 import {RestaurantProps} from "./restaurant.model";
 import {DishProps} from "./dish.model";
 import {UserProps} from "./user.model";
+import {MenuProps} from "./menu.model";
 
 const orderSchema = new Schema({
     price: {
@@ -16,6 +17,10 @@ const orderSchema = new Schema({
     dishes: [{
         type: Schema.Types.ObjectId,
         ref: "Dish"
+    }],
+    menus: [{
+        type: Schema.Types.ObjectId,
+        ref: "Menu"
     }],
     client: {
         type: Schema.Types.ObjectId,
@@ -33,6 +38,7 @@ export interface OrderProps {
     price: number;
     restaurant: RestaurantProps;
     dishes: DishProps[];
+    menus: MenuProps[];
     client: UserProps;
 }
 

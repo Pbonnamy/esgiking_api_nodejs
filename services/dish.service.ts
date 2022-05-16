@@ -50,9 +50,9 @@ export class DishService {
         const res: Record<string, any> = {};
         const dishes = [];
 
-        if (!body.dishes || !Array.isArray(body.dishes) || body.dishes.length === 0) {
+        if (!Array.isArray(body.dishes)) {
             res.error = "wrong parameter";
-        } else if (body.dishes) {
+        } else {
             res.error = {};
 
             for (const id of body.dishes) {

@@ -49,4 +49,34 @@ export class MenuService {
 
         return await menu.save();
     }
+
+    async verifyMenus(body: any) {
+        const res: Record<string, any> = {};
+        const menus = [];
+
+        if (!Array.isArray(body.menus)) {
+            res.error = "wrong parameter";
+        } else {
+            res.error = {};
+
+            for (const id of body.menus) {
+                const menu = await MenuService.getInstance().getOneById(id);
+                if (!menu) {
+                    res.error[id] = "not found";
+                } else {
+                    menus.push(menu);
+                }
+            }
+
+            if (Object.keys(res.error).length === 0) {
+                delete res.error
+            }
+
+            if (menus.length !== 0) {
+                res.menus = menus;
+            }
+        }
+
+        return res;
+    }
 }

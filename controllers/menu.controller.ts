@@ -16,7 +16,6 @@ export class MenuController {
 
             res.json(menu);
         } catch(err) {
-            console.log(err)
             res.status(400).end();
         }
     }
@@ -26,7 +25,6 @@ export class MenuController {
             const menus = await MenuService.getInstance().getAll(req.params.restaurant);
             res.json(menus);
         } catch(err) {
-            console.log(err)
             res.status(500).end();
         }
     }

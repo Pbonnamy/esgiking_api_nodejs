@@ -49,7 +49,6 @@ export function checkRegisterType(): RequestHandler {
                             return;
                         }
 
-                        console.log(user.type)
                         if (user.type === 1) {
                             if (!body.restaurant) {
                                 error.restaurant = "missing parameter"

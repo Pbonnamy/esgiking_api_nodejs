@@ -10,6 +10,7 @@ export class OrderController {
 
             const order = await OrderService.getInstance().createOne({
                 dishes: body.dishes,
+                menus: body.menus,
                 client: body.user,
                 restaurant : body.restaurant,
             });
