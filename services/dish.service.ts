@@ -45,4 +45,34 @@ export class DishService {
 
         return await dish.save();
     }
+
+    async verifyDishes(body: any) {
+        const res: Record<string, any> = {};
+        const dishes = [];
+
+        if (!body.dishes || !Array.isArray(body.dishes) || body.dishes.length === 0) {
+            res.error = "wrong parameter";
+        } else if (body.dishes) {
+            res.error = {};
+
+            for (const id of body.dishes) {
+                const dish = await DishService.getInstance().getOneById(id);
+                if (!dish) {
+                    res.error[id] = "not found";
+                } else {
+                    dishes.push(dish);
+                }
+            }
+
+            if (Object.keys(res.error).length === 0) {
+                delete res.error
+            }
+
+            if (dishes.length !== 0) {
+                res.dishes = dishes;
+            }
+        }
+
+        return res;
+    }
 }

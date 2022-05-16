@@ -1,43 +1,23 @@
 import {Request, RequestHandler} from "express";
-import {DishService} from "../services";
+import {DishService, RestaurantService} from "../services";
 
 export function checkOrder(): RequestHandler {
     return async function(req: Request, res, next) {
         try {
             const body = req.body;
-            const error: Record<string, any> = {};
-            const dishes = [];
 
-            if (body.dishes && !Array.isArray(body.dishes)) {
-                error.dishes = "wrong parameter";
-            } else if (body.dishes) {
-                error.dishes = {};
+            const dishes = await DishService.getInstance().verifyDishes(body);
 
-                for (const id of body.dishes) {
-                    const dish = await DishService.getInstance().getOneById(id);
-                    if (!dish) {
-                        error.dishes[id] = "not found";
-                    } else {
-                        dishes.push(dish);
-                    }
-                }
-
-                if (Object.keys(error.dishes).length === 0) {
-                    delete error.dishes
-                }
-
-                if (dishes.length !== 0) {
-                    req.body.dishes = dishes;
-                }
-            }
-
-            if (Object.keys(error).length !== 0) {
-                res.status(400).send(error).end();
+            if (dishes.error) {
+                res.status(400).send({dishes : dishes.error}).end();
                 return;
+            }else {
+                req.body.dishes = dishes.dishes
             }
 
             next();
         } catch(err) {
+            console.log(err)
             res.status(400).send().end();
         }
     }

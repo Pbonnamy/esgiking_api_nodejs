@@ -27,12 +27,12 @@ export class OrderService {
         return await model.save();
     }
 
-    async getAll(restaurant: string): Promise<OrderDocument[]> {
-        return OrderModel.find({restaurant: restaurant}).populate("dishes").exec();
+    async getAll(filter: object): Promise<OrderDocument[]> {
+        return OrderModel.find(filter).populate("dishes").populate("client").exec();
     }
 
     async getOneById(id: string): Promise<OrderDocument | null> {
-        return OrderModel.findById(id).populate("dishes").exec();
+        return OrderModel.findById(id).populate("dishes").populate("client").exec();
     }
 
     async deleteById(id: string): Promise<boolean> {

@@ -24,7 +24,7 @@ async function startServer(): Promise<void> {
         }
     });
 
-    await SeedUtil.seed(true, true);
+    await SeedUtil.seed(true, false);
 
     const app = express();
     app.get('/', function (req: Request, res: Response) {

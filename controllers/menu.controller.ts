@@ -9,12 +9,14 @@ export class MenuController {
         try {
             const menu = await MenuService.getInstance().createOne({
                 name: body.name,
+                price: body.price,
                 restaurant: body.restaurant,
                 dishes: body.dishes
             });
 
             res.json(menu);
         } catch(err) {
+            console.log(err)
             res.status(400).end();
         }
     }
@@ -24,6 +26,7 @@ export class MenuController {
             const menus = await MenuService.getInstance().getAll(req.params.restaurant);
             res.json(menus);
         } catch(err) {
+            console.log(err)
             res.status(500).end();
         }
     }

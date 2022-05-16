@@ -36,7 +36,18 @@ export class OrderController {
 
     async getAllOrders(req: Request, res: Response) {
         try {
-            const orders = await OrderService.getInstance().getAll(req.params.restaurant);
+            let orders;
+
+            const filter: Record<string, any> = {};
+
+            filter.restaurant = req.params.restaurant;
+
+            if (req.body.user.type._id === 4) {
+                filter.client = req.body.user._id;
+            }
+
+            orders = await OrderService.getInstance().getAll(filter);
+
             res.json(orders);
         } catch(err) {
             res.status(500).end();
@@ -76,7 +87,7 @@ export class OrderController {
         const router = express.Router();
         router.use(express.json())
         router.post('/:restaurant/orders', [checkAuth(),existRestaurant("restaurant"), checkUserType([4]), checkOrder()], this.createOrder.bind(this));
-        router.get('/:restaurant/orders', [checkAuth(), existRestaurant("restaurant"), ownedRestaurant("restaurant"), checkUserType([1, 2, 3])], this.getAllOrders.bind(this));
+        router.get('/:restaurant/orders', [checkAuth(), existRestaurant("restaurant"), ownedRestaurant("restaurant")], this.getAllOrders.bind(this));
         router.get('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant")], this.getOneOrder.bind(this));
         router.delete('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant")], this.deleteOrder.bind(this));
         router.put('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant"), checkOrder()], this.updateOrder.bind(this));

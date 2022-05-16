@@ -6,7 +6,6 @@ export function checkMenu(all: boolean = false): RequestHandler {
         try {
             const body = req.body;
             const error: Record<string, any> = {};
-            const dishes = [];
 
             if (all) {
                 if(!body.name) {
@@ -22,36 +21,25 @@ export function checkMenu(all: boolean = false): RequestHandler {
                 }
             }
 
-            if (body.dishes && !Array.isArray(body.dishes)) {
-                error.dishes = "wrong parameter";
-            } else if (body.dishes) {
-                error.dishes = {};
+            if (body.dishes) {
+                const dishes = await DishService.getInstance().verifyDishes(body);
 
-                for (const id of body.dishes) {
-                    const dish = await DishService.getInstance().getOneById(id);
-                    if (!dish) {
-                        error.dishes[id] = "not found";
-                    } else {
-                        dishes.push(dish);
-                    }
-                }
-
-                if (Object.keys(error.dishes).length === 0) {
-                    delete error.dishes
-                }
-
-                if (dishes.length !== 0) {
-                    req.body.dishes = dishes;
+                if (dishes.error) {
+                    error.dishes = dishes.error;
+                }else {
+                    req.body.dishes = dishes.dishes
                 }
             }
 
             if (Object.keys(error).length !== 0) {
+                console.log(error)
                 res.status(400).send(error).end();
                 return;
             }
 
             next();
         } catch(err) {
+            console.log(err)
             res.status(400).send().end();
         }
     }

@@ -19,11 +19,11 @@ export class MenuService {
     }
 
     async getAll(restaurant_id: string): Promise<MenuDocument[]> {
-        return MenuModel.find({restaurant: restaurant_id}).exec();
+        return MenuModel.find({restaurant: restaurant_id}).populate("dishes").exec();
     }
 
     async getOneById(id: string): Promise<MenuDocument | null> {
-        return MenuModel.findById(id).exec();
+        return MenuModel.findById(id).populate("dishes").exec();
     }
 
     async deleteById(id: string): Promise<boolean> {
