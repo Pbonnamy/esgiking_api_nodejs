@@ -42,6 +42,9 @@ export class DishService {
         if(props.price !== undefined) {
             dish.price = props.price;
         }
+        if(props.discount !== undefined) {
+            dish.discount = props.discount;
+        }
 
         return await dish.save();
     }

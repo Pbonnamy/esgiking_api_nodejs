@@ -10,6 +10,7 @@ export class MenuController {
             const menu = await MenuService.getInstance().createOne({
                 name: body.name,
                 price: body.price,
+                discount: body.discount,
                 restaurant: body.restaurant,
                 dishes: body.dishes
             });

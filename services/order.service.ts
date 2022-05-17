@@ -18,13 +18,13 @@ export class OrderService {
 
         if (props.dishes) {
             props.dishes.forEach((el) => {
-                price += el.price;
+                price += el.price - (el.price * el.discount / 100);
             })
         }
 
         if (props.menus) {
             props.menus.forEach((el) => {
-                price += el.price;
+                price += el.price - (el.price * el.discount / 100);
             })
         }
 
@@ -59,7 +59,7 @@ export class OrderService {
             order.dishes = props.dishes;
 
             props.dishes.forEach((el) => {
-                order.price += el.price;
+                order.price += el.price - (el.price * el.discount / 100);
             })
         } else {
             order.dishes = []
@@ -69,7 +69,7 @@ export class OrderService {
             order.menus = props.menus;
             
             props.menus.forEach((el) => {
-                order.price += el.price;
+                order.price += el.price - (el.price * el.discount / 100);
             })
         } else {
             order.menus = []

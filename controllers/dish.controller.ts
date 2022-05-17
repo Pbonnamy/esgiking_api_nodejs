@@ -24,6 +24,7 @@ export class DishController {
             const dish = await DishService.getInstance().createOne({
                 name: body.name,
                 price: body.price,
+                discount: body.discount,
                 restaurant: body.restaurant
             });
 

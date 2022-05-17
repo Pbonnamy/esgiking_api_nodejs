@@ -10,6 +10,12 @@ const dishSchema = new Schema({
         type: Schema.Types.Number,
         required: true
     },
+    discount:{
+        type: Schema.Types.Number,
+        min: 0,
+        max: 100,
+        default: 0
+    },
     restaurant: {
         type: Schema.Types.ObjectId,
         ref: "Restaurant",
@@ -25,6 +31,7 @@ export interface DishProps {
     _id: string;
     name: string;
     price: number;
+    discount: number;
     restaurant: RestaurantProps;
 }
 

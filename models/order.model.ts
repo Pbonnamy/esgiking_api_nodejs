@@ -26,7 +26,11 @@ const orderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true
-    }
+    },
+    deliverer: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
 }, {
     collection: "orders",
     timestamps: true,
@@ -40,6 +44,7 @@ export interface OrderProps {
     dishes: DishProps[];
     menus: MenuProps[];
     client: UserProps;
+    deliverer: UserProps;
 }
 
 export type OrderDocument = OrderProps & Document;

@@ -11,6 +11,12 @@ const menuSchema = new Schema({
         type: Schema.Types.Number,
         required: true
     },
+    discount:{
+        type: Schema.Types.Number,
+        min: 0,
+        max: 100,
+        default: 0
+    },
     dishes: [{
         type: Schema.Types.ObjectId,
         ref: "Dish",
@@ -31,6 +37,7 @@ export interface MenuProps {
     _id: string
     name: string;
     price: number;
+    discount: number;
     restaurant: RestaurantProps;
     dishes: DishProps[];
 }

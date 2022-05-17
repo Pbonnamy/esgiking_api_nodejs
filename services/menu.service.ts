@@ -46,6 +46,9 @@ export class MenuService {
         if(props.dishes!== undefined) {
             menu.dishes = props.dishes;
         }
+        if(props.discount!== undefined) {
+            menu.discount = props.discount;
+        }
 
         return await menu.save();
     }

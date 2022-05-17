@@ -19,6 +19,12 @@ const userSchema = new Schema({
     restaurant: {
         type: Schema.Types.ObjectId,
         ref: "Restaurant"
+    },
+    long: {
+        type: Schema.Types.Number,
+    },
+    lat: {
+        type: Schema.Types.Number,
     }
 }, {
     collection: "users",
@@ -38,6 +44,8 @@ export interface UserProps {
     login: string;
     password?: string;
     restaurant?: RestaurantProps;
+    long: number;
+    lat: number;
 }
 
 export type UserDocument = UserProps & Document;
