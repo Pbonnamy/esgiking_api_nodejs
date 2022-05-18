@@ -1,5 +1,5 @@
-import {DishesSeeder, RestaurantsSeeder, UsersSeeder, UserTypesSeeder} from "./seeders";
-import {DishModel, OrderModel, RestaurantModel, UserModel, UserTypeModel} from "../models";
+import {DishesSeeder, OrderStatusesSeeder, RestaurantsSeeder, UsersSeeder, UserTypesSeeder} from "./seeders";
+import {DishModel, OrderModel, OrderStatusModel, RestaurantModel, UserModel, UserTypeModel} from "../models";
 
 export class SeedUtil {
     public static async seed(test: boolean = false, fresh: boolean = false) {
@@ -8,6 +8,7 @@ export class SeedUtil {
         }
 
         await UserTypesSeeder.seed();
+        await OrderStatusesSeeder.seed();
 
         if (test) {
             const restaurant = await RestaurantsSeeder.seed();
@@ -18,6 +19,7 @@ export class SeedUtil {
 
     public static async erase() {
         await RestaurantModel.deleteMany();
+        await OrderStatusModel.deleteMany();
         await OrderModel.deleteMany();
         await UserModel.deleteMany();
         await UserTypeModel.deleteMany();
