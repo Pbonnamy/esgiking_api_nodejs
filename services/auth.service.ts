@@ -1,5 +1,6 @@
 import {UserDocument, UserModel, UserProps} from "../models";
 import {AuthUtil} from "../utils";
+import {UserService} from "./user.service";
 
 const jwt = require('jsonwebtoken')
 
@@ -21,11 +22,20 @@ export class AuthService {
             throw new Error('Missing parameters');
         }
 
+        if (props.address) {
+            const exist = await UserService.getInstance().verifyAddress(props.address)
+
+            if(!exist) {
+                throw new Error("address error")
+            }
+        }
+
         const model = new UserModel({
             login: props.login,
             password: AuthUtil.sha512(props.password),
             type: props.type,
-            restaurant: props.restaurant
+            restaurant: props.restaurant,
+            address: props.address
         });
 
         const user = await model.save();

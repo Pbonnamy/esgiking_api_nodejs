@@ -16,6 +16,9 @@ const userSchema = new Schema({
         type: Schema.Types.Number,
         ref: "UserType"
     },
+    address: {
+        type: Schema.Types.String
+    },
     restaurant: {
         type: Schema.Types.ObjectId,
         ref: "Restaurant"
@@ -46,6 +49,7 @@ export interface UserProps {
     restaurant?: RestaurantProps;
     long: number;
     lat: number;
+    address: string;
 }
 
 export type UserDocument = UserProps & Document;

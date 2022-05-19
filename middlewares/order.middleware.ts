@@ -32,6 +32,11 @@ export function checkOrder(): RequestHandler {
                 return;
             }
 
+            if (body.status && body.user.type._id === 4) {
+                res.status(401).send({ error: 'Access restricted' }).end();
+                return;
+            }
+
             next();
         } catch(err) {
             res.status(400).send().end();

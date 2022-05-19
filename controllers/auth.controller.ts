@@ -12,12 +12,14 @@ export class AuthController {
                 login: body.login,
                 password: body.password,
                 type: body.type,
-                restaurant: body.restaurant
+                restaurant: body.restaurant,
+                address: body.address
             });
 
             user.password = undefined
             res.json(user);
         } catch(err) {
+            console.log(err)
             res.status(400).end();
         }
     }

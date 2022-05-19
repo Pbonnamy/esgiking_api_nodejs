@@ -1,4 +1,5 @@
 import {UserDocument, UserModel, UserProps} from "../models";
+import axios from "axios";
 
 
 export class UserService {
@@ -36,6 +37,16 @@ export class UserService {
         return res.deletedCount === 1;
     }
 
+    async verifyAddress(address: string): Promise<boolean> {
+        return await axios.get('https://api-adresse.data.gouv.fr/search/?q=' + address)
+            .then((response) => {
+                return response.data.features.length !== 0;
+            })
+            .catch((error) => {
+                throw new Error(error)
+            })
+    }
+
     async updateById(id: string, props: UserProps): Promise<UserDocument | null> {
         const user = await this.getOneById(id);
         if(!user) {
@@ -47,6 +58,20 @@ export class UserService {
         }
         if(props.password !== undefined) {
             user.password = props.password;
+        }
+        if(props.lat !== undefined) {
+            user.lat = props.lat
+        }
+        if(props.long !== undefined) {
+            user.long = props.long
+        }
+        if(props.address !== undefined) {
+            const exist = await this.verifyAddress(props.address);
+
+            if(!exist) {
+                throw new Error("wrong address")
+            }
+            user.address = props.address;
         }
 
         return await user.save();

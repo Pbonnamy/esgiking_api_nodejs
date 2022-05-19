@@ -18,6 +18,10 @@ export class UserTypesSeeder {
             {
                 id: 4,
                 name: "client"
+            },
+            {
+                id: 5,
+                name: "deliverer"
             }
         ];
 

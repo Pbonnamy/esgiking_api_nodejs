@@ -1,5 +1,7 @@
 import {OrderDocument, OrderModel, OrderProps} from "../models";
 
+const axios = require('axios')
+
 export class OrderService {
     private static instance?: OrderService;
 
@@ -73,6 +75,13 @@ export class OrderService {
             })
         } else {
             order.menus = []
+        }
+
+        if(props.status !== undefined) {
+            if (order.status === 3) {
+
+            }
+            order.status = props.status
         }
 
         order.price = Number(order.price.toFixed(2))

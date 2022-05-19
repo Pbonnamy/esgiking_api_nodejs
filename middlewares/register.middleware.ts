@@ -37,14 +37,14 @@ export function checkRegisterType(): RequestHandler {
                     if (body.type === 1) {
                         res.status(401).send({ error: 'Access restricted' }).end();
                         return;
-                    }else if (body.type === 2 || body.type === 3) {
+                    }else if (body.type === 2 || body.type === 3 || body.type === 5) {
 
                         const token = AuthUtil.getToken(req.headers.authorization);
                         jwt.verify(token, process.env.SECRET);
                         const user = jwt.decode(token, {complete: false})
 
                         if ((body.type === 2 && user.type !== 1) ||
-                            (body.type === 3 && (user.type !== 1 && user.type !== 2))) {
+                            ((body.type === 3 || body.type === 5) && (user.type !== 1 && user.type !== 2))) {
                             res.status(401).send({ error: 'Access restricted' }).end();
                             return;
                         }
@@ -66,6 +66,10 @@ export function checkRegisterType(): RequestHandler {
                     } else if ((body.type === 4) && body.restaurant){
                         res.status(400).end();
                         return;
+                    }
+
+                    if (body.type === 4 && !body.address) {
+                        error.address = "missing parameter"
                     }
                 }
 

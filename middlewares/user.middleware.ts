@@ -10,7 +10,7 @@ export function checkUser(): RequestHandler {
                     res.status(401).send({error: 'Access restricted'}).end();
                     return;
                 }
-            }else if ((req.body.user.type._id === 3 || req.body.user.type._id === 4) && req.params.id !== req.body.user.id.toString()) {
+            }else if ((req.body.user.type._id === 3 || req.body.user.type._id === 4 || req.body.user.type._id === 5) && req.params.id !== req.body.user.id.toString()) {
                 res.status(401).send({ error: 'Access restricted' }).end();
                 return;
             }

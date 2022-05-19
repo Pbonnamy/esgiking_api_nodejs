@@ -63,6 +63,11 @@ export class UserController {
             const body = req.body;
             const error: Record<string, any> = {};
 
+            if ((body.lat || body.long) && body.user.type._id !== 5) {
+                res.status(401).send({ error: 'Access restricted' }).end();
+                return;
+            }
+
             if(body.login) {
                 const exist = await UserService.getInstance().getOneByLogin(body.login);
 
@@ -95,7 +100,7 @@ export class UserController {
         router.get('/', [checkAuth(), checkUserType([1, 2]), checkAllUsers()], this.getAllUsers.bind(this));
         router.get('/:id', [checkAuth(), checkUser()], this.getOneUser.bind(this));
         router.delete('/:id', [checkAuth(), checkUserType([1, 2]), checkUser()], this.deleteUser.bind(this));
-        router.put('/:id', [checkAuth(), checkUserType([1, 2, 4]), checkUser()], this.updateUser.bind(this));
+        router.put('/:id', [checkAuth(), checkUserType([1, 2, 4, 5]), checkUser()], this.updateUser.bind(this));
         return router;
     }
 }
