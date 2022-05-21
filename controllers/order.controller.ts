@@ -1,6 +1,6 @@
 import express, {Router, Request, Response} from "express";
 import {OrderService} from "../services";
-import {checkAuth, checkOrder, checkUserType, existRestaurant, ownedRestaurant} from "../middlewares";
+import {checkAuth, checkOrder, checkUserType, existRestaurant, ownedOrder, ownedRestaurant} from "../middlewares";
 
 export class OrderController {
 
@@ -84,14 +84,47 @@ export class OrderController {
         }
     }
 
+    async createMessage(req: Request, res: Response) {
+        try {
+            const order = await OrderService.getInstance().getOneById(req.params.id);
+
+            if(!order) {
+                res.status(404).send({error : "Order not found"}).end();
+                return;
+            }
+
+            const body = req.body;
+            const error: Record<string, any> = {};
+
+            if(!body.text) {
+                error.text = "missing parameter"
+            }
+
+            if (Object.keys(error).length !== 0) {
+                res.status(400).send(error).end();
+                return;
+            }
+            const message = await OrderService.getInstance().createMessage({
+                text: body.text,
+                date: new Date(),
+                sender: body.user
+            }, order._id.toString());
+
+            res.json(message);
+        } catch(err) {
+            res.status(400).end();
+        }
+    }
+
     buildRoutes(): Router {
         const router = express.Router();
-        router.use(express.json())
-        router.post('/:restaurant/orders', [checkAuth(),existRestaurant("restaurant"), checkUserType([4]), checkOrder()], this.createOrder.bind(this));
-        router.get('/:restaurant/orders', [checkAuth(), existRestaurant("restaurant"), ownedRestaurant("restaurant")], this.getAllOrders.bind(this));
-        router.get('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant")], this.getOneOrder.bind(this));
-        router.delete('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant")], this.deleteOrder.bind(this));
-        router.put('/:restaurant/orders/:id', [checkAuth(), existRestaurant("restaurant"), checkOrder()], this.updateOrder.bind(this));
+        router.use(express.json(), checkAuth())
+        router.post('/:restaurant/orders', [checkUserType([4]),existRestaurant("restaurant"), checkOrder()], this.createOrder.bind(this));
+        router.get('/:restaurant/orders', [existRestaurant("restaurant"), ownedRestaurant("restaurant")],this.getAllOrders.bind(this));
+        router.get('/:restaurant/orders/:id', [existRestaurant("restaurant"), ownedOrder()], this.getOneOrder.bind(this));
+        router.delete('/:restaurant/orders/:id',[existRestaurant("restaurant"), ownedOrder()], this.deleteOrder.bind(this));
+        router.put('/:restaurant/orders/:id', [existRestaurant("restaurant"), ownedOrder(), checkOrder()], this.updateOrder.bind(this));
+        router.post('/:restaurant/orders/:id/messages', [existRestaurant("restaurant"), ownedOrder()], this.createMessage.bind(this));
         return router;
     }
 }

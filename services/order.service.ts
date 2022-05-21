@@ -1,7 +1,6 @@
 import {OrderDocument, OrderModel, OrderProps, UserProps} from "../models";
 import {UserService} from "./user.service";
-
-const axios = require('axios')
+import {OrderMessageDocument, OrderMessageModel, OrderMessageProps} from "../models";
 
 export class OrderService {
     private static instance?: OrderService;
@@ -37,12 +36,23 @@ export class OrderService {
         return await model.save();
     }
 
+    public async createMessage(props: Partial<OrderMessageProps>, id: string): Promise<OrderMessageDocument> {
+        const model = new OrderMessageModel(props);
+        const res = await model.save();
+
+        const orderData = await this.getOneById(id);
+        await orderData?.messages.push(res);
+        await orderData?.save();
+
+        return res;
+    }
+
     async getAll(filter: object): Promise<OrderDocument[]> {
-        return OrderModel.find(filter).populate("dishes").populate("menus").populate("client").exec();
+        return OrderModel.find(filter).populate("dishes").populate("menus").populate("client").populate("messages").exec();
     }
 
     async getOneById(id: string): Promise<OrderDocument | null> {
-        return OrderModel.findById(id).populate("dishes").populate("menus").populate("client").exec();
+        return OrderModel.findById(id).populate("dishes").populate("menus").populate("client").populate("messages").exec();
     }
 
     async deleteById(id: string): Promise<boolean> {
