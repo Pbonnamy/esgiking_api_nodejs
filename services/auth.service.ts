@@ -28,6 +28,9 @@ export class AuthService {
             if(!exist) {
                 throw new Error("address error")
             }
+
+            props.long = exist.geometry.coordinates[0];
+            props.lat = exist.geometry.coordinates[1];
         }
 
         const model = new UserModel({
@@ -35,7 +38,9 @@ export class AuthService {
             password: AuthUtil.sha512(props.password),
             type: props.type,
             restaurant: props.restaurant,
-            address: props.address
+            address: props.address,
+            long: props.long,
+            lat: props.lat
         });
 
         const user = await model.save();

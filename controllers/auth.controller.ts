@@ -19,7 +19,6 @@ export class AuthController {
             user.password = undefined
             res.json(user);
         } catch(err) {
-            console.log(err)
             res.status(400).end();
         }
     }

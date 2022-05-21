@@ -21,12 +21,23 @@ export class UsersSeeder {
             {
                 login: "client",
                 type: 4,
-                address: "30 Rue du Sergent Bauchat, 75012 Paris"
+                address: "30 Rue du Sergent Bauchat, 75012 Paris",
+                lat: 48.845689,
+                long: 2.3935
             },
             {
                 login: "deliverer",
                 type: 5,
-                restaurant: restaurant
+                restaurant: restaurant,
+                lat: 48.86253,
+                long: 2.36928
+            },
+            {
+                login: "deliverer 2",
+                type: 5,
+                restaurant: restaurant,
+                lat: 47.087637,
+                long: 2.396499
             }
         ];
 
@@ -39,7 +50,9 @@ export class UsersSeeder {
                     password: AuthUtil.sha512("test1234"),
                     type: user.type,
                     restaurant: user.restaurant,
-                    address: user.address
+                    address: user.address,
+                    long: user.long,
+                    lat: user.lat
                 }).save();
             }
         }

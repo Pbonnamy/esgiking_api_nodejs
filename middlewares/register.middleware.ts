@@ -21,6 +21,11 @@ export function checkRegisterType(): RequestHandler {
                 }
             }
 
+            if (body.long || body.lat) {
+                res.status(400).end();
+                return;
+            }
+
             if(!body.password) {
                 error.password = "missing parameter"
             }

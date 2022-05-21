@@ -1,4 +1,5 @@
-import {OrderDocument, OrderModel, OrderProps} from "../models";
+import {OrderDocument, OrderModel, OrderProps, UserProps} from "../models";
+import {UserService} from "./user.service";
 
 const axios = require('axios')
 
@@ -49,6 +50,23 @@ export class OrderService {
         return res.deletedCount === 1;
     }
 
+    getDistanceFromLatLonInKm(lat1 :number, lon1 :number, lat2: number, lon2: number) {
+        let R = 6371; // Radius of the earth in km
+        let dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+        let dLon = this.deg2rad(lon2-lon1);
+        let a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+        ;
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c; // Distance in km
+    }
+
+    deg2rad(deg: number) {
+        return deg * (Math.PI/180)
+    }
+
     async updateById(id: string, props: OrderProps): Promise<OrderDocument | null> {
         const order = await this.getOneById(id);
         if(!order) {
@@ -78,9 +96,32 @@ export class OrderService {
         }
 
         if(props.status !== undefined) {
-            if (order.status === 3) {
 
+            if (order.status === 3) {
+                let user: UserProps | null = null;
+
+                const users = await UserService.getInstance().getAll(order.restaurant._id.toString());
+                let min: number | null = null;
+                users.forEach(el => {
+                    if(el.lat && el.long) {
+                        let distance = this.getDistanceFromLatLonInKm(el.lat, el.long, order.client.lat, order.client.long);
+                        if (!min) {
+                            user = el
+                            min = distance
+                        }else if (distance < min) {
+                            min = distance
+                            user = el
+                        }
+                    }
+                })
+
+                if (!user) {
+                    throw new Error("no deliverer")
+                }
+
+                order.deliverer = user
             }
+
             order.status = props.status
         }
 

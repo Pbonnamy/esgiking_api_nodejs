@@ -37,10 +37,10 @@ export class UserService {
         return res.deletedCount === 1;
     }
 
-    async verifyAddress(address: string): Promise<boolean> {
+    async verifyAddress(address: string): Promise<any> {
         return await axios.get('https://api-adresse.data.gouv.fr/search/?q=' + address)
             .then((response) => {
-                return response.data.features.length !== 0;
+                return response.data.features[0];
             })
             .catch((error) => {
                 throw new Error(error)
@@ -71,7 +71,10 @@ export class UserService {
             if(!exist) {
                 throw new Error("wrong address")
             }
+
             user.address = props.address;
+            user.long = exist.geometry.coordinates[0];
+            user.lat = exist.geometry.coordinates[1];
         }
 
         return await user.save();
