@@ -107,7 +107,12 @@ export class OrderService {
 
         if(props.status !== undefined) {
 
-            if (order.status === 3) {
+            if (props.status === 3) {
+
+                if (!order.client) {
+                    throw new Error("missing client")
+                }
+
                 let user: UserProps | null = null;
 
                 const users = await UserService.getInstance().getAll(order.restaurant._id.toString());

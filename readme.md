@@ -44,7 +44,7 @@
   - name
   - address
   - phone
-  - description `(optionnal)`
+  - description `(optionnal, default null)`
 - /restaurants `(GET)` -> show all
 - /restaurants/{id} `(GET)` -> show one
 - /restaurants/{id} `(DELETE)` -> delete one `(only if user_type 1)`
@@ -53,7 +53,7 @@
   - name
   - address
   - phone
-  - description
+  - description 
 
 **DISHES**
 
@@ -63,12 +63,12 @@
   ```
   - name
   - price
-  - discount
+  - discount `(optionnal, default 0)`
 - /restaurants/{restaurant}/dishes/{id} `(PUT)` -> update one `(only if user_type 1 or 2)`
   ```
   - name
   - price
-  - discount
+  - discount 
 - /restaurants/{restaurant}/dishes/{id} `(DELETE)` -> delete one `(only if user_type 1 or 2)`
 
 **Menus**

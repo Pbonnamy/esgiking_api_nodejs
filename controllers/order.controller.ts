@@ -129,8 +129,8 @@ export class OrderController {
         router.post('/:restaurant/orders', [existRestaurant("restaurant"), checkOrder(true)], this.createOrder.bind(this));
         router.get('/:restaurant/orders', [existRestaurant("restaurant"), checkAuth(), checkUserType([1, 2, 3]), ownedRestaurant("restaurant")],this.getAllOrders.bind(this));
         router.get('/:restaurant/orders/:id', [existRestaurant("restaurant"), checkAuth(), ownedOrder()], this.getOneOrder.bind(this));
-        router.delete('/:restaurant/orders/:id',[existRestaurant("restaurant"),checkAuth(), checkUserType([1, 2, 3, 4]), ownedOrder()], this.deleteOrder.bind(this));
-        router.put('/:restaurant/orders/:id', [existRestaurant("restaurant"), ownedOrder(), checkOrder()], this.updateOrder.bind(this));
+        router.delete('/:restaurant/orders/:id',[existRestaurant("restaurant"), checkAuth(), checkUserType([1, 2, 3, 4]), ownedOrder()], this.deleteOrder.bind(this));
+        router.put('/:restaurant/orders/:id', [existRestaurant("restaurant"),checkAuth(), ownedOrder(), checkOrder()], this.updateOrder.bind(this));
         router.post('/:restaurant/orders/:id/messages', [existRestaurant("restaurant"),checkAuth(), ownedOrder()], this.createMessage.bind(this));
         return router;
     }

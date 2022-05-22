@@ -28,7 +28,7 @@ async function startServer(): Promise<void> {
 
     const app = express();
     app.get('/', function (req: Request, res: Response) {
-        res.send("Hello world");
+        res.send("Welcome to Esgi King !");
     })
 
     const authController = new AuthController();
