@@ -29,8 +29,10 @@ const orderSchema = new Schema({
     }],
     client: {
         type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        ref: "User"
+    },
+    take_away: {
+        type: Schema.Types.Boolean
     },
     deliverer: {
         type: Schema.Types.ObjectId,
@@ -54,7 +56,8 @@ export interface OrderProps {
     dishes: DishProps[];
     menus: MenuProps[];
     messages: OrderMessageProps[];
-    client: UserProps;
+    client?: UserProps;
+    take_away: boolean;
     deliverer: UserProps;
     status: number;
 }

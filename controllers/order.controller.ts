@@ -8,12 +8,19 @@ export class OrderController {
         try {
             const body = req.body;
 
-            const order = await OrderService.getInstance().createOne({
+            let props = {
                 dishes: body.dishes,
                 menus: body.menus,
-                client: body.user,
+                take_away: body.take_away,
                 restaurant : body.restaurant,
-            });
+                client: undefined
+            }
+
+            if (body.take_away === true) {
+                props.client = body.user
+            }
+
+            const order = await OrderService.getInstance().createOne(props);
 
             res.json(order);
 
@@ -118,13 +125,13 @@ export class OrderController {
 
     buildRoutes(): Router {
         const router = express.Router();
-        router.use(express.json(), checkAuth())
-        router.post('/:restaurant/orders', [checkUserType([4]),existRestaurant("restaurant"), checkOrder()], this.createOrder.bind(this));
-        router.get('/:restaurant/orders', [existRestaurant("restaurant"), checkUserType([1, 2, 3]), ownedRestaurant("restaurant")],this.getAllOrders.bind(this));
-        router.get('/:restaurant/orders/:id', [existRestaurant("restaurant"), ownedOrder()], this.getOneOrder.bind(this));
-        router.delete('/:restaurant/orders/:id',[existRestaurant("restaurant"),checkUserType([1, 2, 3, 4]), ownedOrder()], this.deleteOrder.bind(this));
+        router.use(express.json())
+        router.post('/:restaurant/orders', [existRestaurant("restaurant"), checkOrder(true)], this.createOrder.bind(this));
+        router.get('/:restaurant/orders', [existRestaurant("restaurant"), checkAuth(), checkUserType([1, 2, 3]), ownedRestaurant("restaurant")],this.getAllOrders.bind(this));
+        router.get('/:restaurant/orders/:id', [existRestaurant("restaurant"), checkAuth(), ownedOrder()], this.getOneOrder.bind(this));
+        router.delete('/:restaurant/orders/:id',[existRestaurant("restaurant"),checkAuth(), checkUserType([1, 2, 3, 4]), ownedOrder()], this.deleteOrder.bind(this));
         router.put('/:restaurant/orders/:id', [existRestaurant("restaurant"), ownedOrder(), checkOrder()], this.updateOrder.bind(this));
-        router.post('/:restaurant/orders/:id/messages', [existRestaurant("restaurant"), ownedOrder()], this.createMessage.bind(this));
+        router.post('/:restaurant/orders/:id/messages', [existRestaurant("restaurant"),checkAuth(), ownedOrder()], this.createMessage.bind(this));
         return router;
     }
 }

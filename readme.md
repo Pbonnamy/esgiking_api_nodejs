@@ -64,7 +64,6 @@
   - name
   - price
   - discount
-  - restaurant
 - /restaurants/{restaurant}/dishes/{id} `(PUT)` -> update one `(only if user_type 1 or 2)`
   ```
   - name
@@ -81,7 +80,6 @@
   - name
   - price
   - discount
-  - restaurant
   - dishes[]
 - /restaurants/{restaurant}/menus/{id} `(PUT)` -> update one `(only if user_type 1 or 2)`
   ```
@@ -100,8 +98,7 @@
   ```
   - dishes[]
   - menus[]
-  - client
-  - restaurant
+  - take_away
 - /restaurants/{restaurant}/orders/{id} `(PUT)` -> update one
   ```
   - dishes[]
