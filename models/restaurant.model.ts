@@ -16,6 +16,12 @@ const restaurantSchema = new Schema({
     description: {
         type: Schema.Types.String,
     },
+    long: {
+        type: Schema.Types.Number,
+    },
+    lat: {
+        type: Schema.Types.Number,
+    }
 }, {
     collection: "restaurants",
     timestamps: true,
@@ -28,6 +34,8 @@ export interface RestaurantProps {
     address: string;
     phone: string;
     description?: string;
+    long: number;
+    lat: number;
 }
 
 export type RestaurantDocument = RestaurantProps & Document;

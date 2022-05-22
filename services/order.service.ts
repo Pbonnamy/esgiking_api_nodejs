@@ -114,7 +114,7 @@ export class OrderService {
                 let min: number | null = null;
                 users.forEach(el => {
                     if(el.lat && el.long) {
-                        let distance = this.getDistanceFromLatLonInKm(el.lat, el.long, order.client.lat, order.client.long);
+                        let distance = this.getDistanceFromLatLonInKm(el.lat, el.long, order.restaurant.lat, order.restaurant.long);
                         if (!min) {
                             user = el
                             min = distance
