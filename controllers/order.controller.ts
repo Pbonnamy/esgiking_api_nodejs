@@ -120,9 +120,9 @@ export class OrderController {
         const router = express.Router();
         router.use(express.json(), checkAuth())
         router.post('/:restaurant/orders', [checkUserType([4]),existRestaurant("restaurant"), checkOrder()], this.createOrder.bind(this));
-        router.get('/:restaurant/orders', [existRestaurant("restaurant"), ownedRestaurant("restaurant")],this.getAllOrders.bind(this));
+        router.get('/:restaurant/orders', [existRestaurant("restaurant"), checkUserType([1, 2, 3]), ownedRestaurant("restaurant")],this.getAllOrders.bind(this));
         router.get('/:restaurant/orders/:id', [existRestaurant("restaurant"), ownedOrder()], this.getOneOrder.bind(this));
-        router.delete('/:restaurant/orders/:id',[existRestaurant("restaurant"), ownedOrder()], this.deleteOrder.bind(this));
+        router.delete('/:restaurant/orders/:id',[existRestaurant("restaurant"),checkUserType([1, 2, 3, 4]), ownedOrder()], this.deleteOrder.bind(this));
         router.put('/:restaurant/orders/:id', [existRestaurant("restaurant"), ownedOrder(), checkOrder()], this.updateOrder.bind(this));
         router.post('/:restaurant/orders/:id/messages', [existRestaurant("restaurant"), ownedOrder()], this.createMessage.bind(this));
         return router;
