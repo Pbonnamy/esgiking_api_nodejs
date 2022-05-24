@@ -4,7 +4,8 @@
   "main": "index.ts",
   "scripts": {
     "start": "node ./dist/index.js",
-    "build": "rd /q /s dist && tsc"
+    "build -windows": "rd /q /s dist && tsc",
+    "build": "rm -rf ./dist && tsc"
   },
   "keywords": [],
   "author": "",
